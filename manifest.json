@@ -1,0 +1,20 @@
+{
+  "name": "FreeMode876",
+  "short_name": "FM876",
+  "description": "Chat social livre e anônimo",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0e0f14",
+  "theme_color": "#6c63ff",
+  "orientation": "portrait-primary",
+  "categories": ["social", "communication"],
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ],
+  "screenshots": [],
+  "shortcuts": [
+    { "name": "Feed", "url": "./index.html#feed", "description": "Ver feed principal" },
+    { "name": "Grupos", "url": "./index.html#groups", "description": "Meus grupos" }
+  ]
+}

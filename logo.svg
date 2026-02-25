@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#6c63ff"/>
+      <stop offset="100%" style="stop-color:#ff6b9d"/>
+    </linearGradient>
+    <linearGradient id="g2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00d4aa"/>
+      <stop offset="100%" style="stop-color:#6c63ff"/>
+    </linearGradient>
+  </defs>
+  <!-- Background -->
+  <rect width="512" height="512" rx="120" fill="#0e0f14"/>
+  <!-- Chat bubbles -->
+  <rect x="80" y="160" width="280" height="120" rx="60" fill="url(#g1)"/>
+  <rect x="152" y="232" width="280" height="120" rx="60" fill="url(#g2)" opacity="0.9"/>
+  <!-- FM text -->
+  <text x="256" y="200" font-family="'Arial Black', sans-serif" font-size="72" font-weight="900" fill="white" text-anchor="middle" dominant-baseline="middle">FM</text>
+  <!-- 876 -->
+  <text x="256" y="300" font-family="'Arial Black', sans-serif" font-size="52" font-weight="900" fill="white" text-anchor="middle" dominant-baseline="middle">876</text>
+  <!-- Dot accents -->
+  <circle cx="140" cy="410" r="18" fill="url(#g1)"/>
+  <circle cx="196" cy="420" r="12" fill="url(#g2)" opacity="0.7"/>
+  <circle cx="240" cy="412" r="8" fill="#6c63ff" opacity="0.5"/>
+</svg>
