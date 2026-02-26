@@ -771,54 +771,137 @@ body.christmas-theme .top-bar{border-bottom-color:#c41e3a33!important}
 /* ══════════════════════════════════════════════════
    RESPONSIVE — MOBILE OVERHAUL
 ══════════════════════════════════════════════════ */
-@media(max-width:700px){
-  :root{--hh:54px;--bh:54px}
+@media(max-width:700px){\n  :root{--hh:54px;--bh:56px}
   .top-bar{padding:0 10px;gap:8px}
   .tb-logo{font-size:16px}
   .tb-logo-icon{width:28px;height:28px;border-radius:8px}
+  .tb-actions{gap:6px}
+  /* Feed */
   .feed-wrap{padding:8px 6px;gap:10px}
   .post-card{border-radius:10px}
   .compose-card{border-radius:10px;padding:10px}
-  .compose-ta{min-height:60px;font-size:13px}
-  .compose-actions{gap:6px}
+  .compose-ta{min-height:60px;font-size:14px}
+  .compose-actions{gap:6px;flex-wrap:wrap}
   .c-btn{padding:6px 8px;font-size:11px}
-  .btn-post{padding:7px 14px;font-size:12px}
-  .pa-btn{font-size:11px;padding:8px 2px}
+  .btn-post{padding:8px 16px;font-size:13px}
+  .pa-btn{font-size:11px;padding:8px 4px}
+  /* Post actions full width */
+  .post-actions{overflow-x:auto;scrollbar-width:none}
+  .post-actions::-webkit-scrollbar{display:none}
+  /* Auth */
   .auth-card{padding:24px 18px;border-radius:18px}
   .auth-logo-icon{width:52px;height:52px}
   .auth-logo-name{font-size:22px}
-  .modal{border-radius:16px 16px 0 0;margin-top:auto;max-height:85vh;
-    position:fixed;bottom:0;left:0;right:0;max-width:100%}
+  /* Modal bottom sheet */
+  .modal{border-radius:20px 20px 0 0;margin-top:auto;max-height:90vh;
+    position:fixed;bottom:0;left:0;right:0;max-width:100%;width:100%}
   .modal-ov{padding:0;align-items:flex-end}
+  .modal-body{max-height:70vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
+  /* Groups */
   .groups-list-panel{width:100%}
   .grp-detail-panel{display:none!important}
   .group-chat-panel{display:flex}
   .groups-layout{position:relative}
-  /* Slide groups panel */
   .groups-list-panel{position:absolute;left:0;top:0;bottom:0;z-index:5;
     background:var(--s1);transition:.3s}
   .groups-list-panel.grp-hidden{transform:translateX(-100%)}
   .group-chat-panel{position:absolute;left:0;top:0;right:0;bottom:0;z-index:4}
+  /* Chat */
   .chat-msgs,.gcp-msgs{padding:10px 8px}
   .msg-group,.grp-msg-group{max-width:90%}
+  .msg-bubble{font-size:14px;line-height:1.5}
+  .chat-input-wrap{padding:8px 10px}
+  .chat-input{font-size:14px;padding:10px 14px;border-radius:22px}
+  /* Nav bar improvements */
+  .nav-bar{height:var(--bh)}
+  .nb-btn{font-size:9px;padding:4px 0}
+  .nb-btn svg{width:22px;height:22px}
+  /* Calls */
   .call-av{width:90px;height:90px}
   .call-name{font-size:22px}
   .call-actions{gap:16px}
   .call-btn{width:52px;height:52px}
   #localVideo{width:90px;height:120px;bottom:70px}
+  /* Profile */
+  .profile-header{padding:20px 14px 14px}
+  .profile-av{width:72px;height:72px;font-size:28px}
+  .profile-name{font-size:20px}
+  /* Settings */
+  .setting-row{padding:12px 0}
+  /* Notifications */
+  .push-toast{right:8px;left:8px;width:auto;max-width:none}
+  .notif-panel{right:8px;left:8px;width:auto}
+  /* Grp rooms bar */
+  .grp-rooms-bar{padding:6px 10px}
+  /* Safe area for notched phones */
+  .nav-bar{padding-bottom:env(safe-area-inset-bottom,0)}
 }
 @media(max-width:380px){
   .pa-btn span{display:none}
   .pa-btn{gap:0}
   .tb-logo{display:none}
+  .auth-card{padding:20px 14px}
+  .compose-actions{gap:4px}
 }
+
+
+/* ══ SETTINGS MODAL ══ */
+.settings-section{margin-bottom:20px}
+.settings-title{font-size:11px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
+.setting-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--bd)}
+.setting-row:last-child{border-bottom:none}
+.setting-ico{font-size:22px;flex-shrink:0;width:36px;text-align:center}
+.setting-info{flex:1}
+.setting-label{font-size:14px;font-weight:600}
+.setting-sub{font-size:12px;color:var(--tx2);margin-top:2px}
+.toggle-wrap{position:relative;width:44px;height:24px;flex-shrink:0}
+.toggle-wrap input{opacity:0;width:0;height:0;position:absolute}
+.toggle-slider{position:absolute;inset:0;background:var(--bd);border-radius:24px;cursor:pointer;transition:.3s}
+.toggle-slider:before{content:'';position:absolute;height:18px;width:18px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.3s}
+.toggle-wrap input:checked+.toggle-slider{background:var(--acc)}
+.toggle-wrap input:checked+.toggle-slider:before{transform:translateX(20px)}
+
+/* ══ FIX: incoming call as full-screen ══ */
+#incomingCallScreen{position:fixed;inset:0;z-index:550;display:none;background:radial-gradient(ellipse at 50% 30%,#1d1040 0%,#0c0d12 70%);flex-direction:column;align-items:center;justify-content:center}
+#incomingCallScreen.active{display:flex}
+#callScreen{position:fixed;inset:0;z-index:560;display:none;background:radial-gradient(ellipse at 50% 30%,#1a1040 0%,#0c0d12 70%);flex-direction:column;align-items:center;justify-content:center}
+#callScreen.active{display:flex}
+#videoCallScreen{position:fixed;inset:0;z-index:570;display:none;background:#000}
+#videoCallScreen.active{display:flex;flex-direction:column}
+.call-ring3{position:absolute;inset:-36px;border-radius:50%;border:2px solid rgba(108,99,255,.12);animation:callRing 1.5s ease-out infinite .8s}
+.call-type-badge{background:rgba(108,99,255,.2);border:1px solid rgba(108,99,255,.3);border-radius:20px;padding:4px 14px;font-size:12px;font-weight:700;color:var(--acc);margin-bottom:16px}
+.call-btn.cam{background:var(--s2);color:var(--tx)}
+.call-btn.cam svg{fill:var(--tx)}
+.call-btn.muted{background:#ef4444}
+.call-btn.muted svg{fill:white}
+.video-name-bar{position:absolute;top:0;left:0;right:0;padding:20px;background:linear-gradient(rgba(0,0,0,.6),transparent);display:flex;align-items:center;justify-content:space-between}
+.video-peer-name{font-size:18px;font-weight:700}
+.video-timer-badge{background:rgba(0,0,0,.5);padding:4px 12px;border-radius:20px;font-size:13px;font-weight:700}
+
+/* ══ POST text links ══ */
+.post-txt a,.msg-bubble a,.cmt-txt a{color:var(--acc);text-decoration:none;border-bottom:1px solid rgba(108,99,255,.3)}
+.post-txt a:hover,.msg-bubble a:hover{opacity:.8}
+
+/* ══ NOTIFS SCREEN ══ */
+#notifsScreen .notif-item{padding:14px 16px;border-bottom:1px solid var(--bd);display:flex;gap:12px;cursor:pointer;transition:.2s;align-items:flex-start}
+#notifsScreen .notif-item:hover{background:var(--s2)}
+#notifsScreen .notif-item.unread{background:rgba(108,99,255,.06);border-left:3px solid var(--acc)}
+#notifsScreen .notif-item.unread .ni-ico{background:rgba(108,99,255,.15)}
+#notifsScreen .ni-ico{width:44px;height:44px;border-radius:50%;background:var(--s2);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+#notifsScreen .ni-txt{font-size:14px;line-height:1.5;flex:1}
+#notifsScreen .ni-time{font-size:11px;color:var(--tx3);margin-top:3px}
+#notifsScreen .notifs-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:60%;gap:12px;color:var(--tx3)}
+#notifsScreen .notifs-empty svg{width:56px;height:56px;fill:var(--tx3);opacity:.4}
+#notifsScreen .notifs-empty p{font-size:15px;font-weight:600}
+#notifsScreen .notifs-empty span{font-size:13px}
+
 </style>
 </head>
 <body>
 
 <!-- ═══ OVERLAYS ══════════════════════════════════════════ -->
 <div class="push-toast" id="pushToast">
-  <div class="pt-ico" id="ptIco">🔔</div>
+  <div class="pt-ico" id="ptIco">📢</div>
   <div class="pt-body"><div class="pt-title" id="ptTitle"></div><div class="pt-msg" id="ptMsg"></div></div>
   <button class="pt-close" onclick="closePush()">✕</button>
 </div>
@@ -899,6 +982,7 @@ body.christmas-theme .top-bar{border-bottom-color:#c41e3a33!important}
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
         <div class="tb-badge" id="notifBadge" style="display:none">0</div>
       </div>
+      <div class="tb-btn" onclick="openSettings()" title="Definições"><svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.07,0.94l-2.03,1.58c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/></svg></div>
       <div class="tb-btn" onclick="openMyProfile()" title="Meu perfil">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
       </div>
@@ -972,7 +1056,7 @@ body.christmas-theme .top-bar{border-bottom-color:#c41e3a33!important}
   <div class="nav-bar" id="navBar">
     <div class="nav-item on" id="navFeed" onclick="navTo('feed')">
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-      <span>Feed</span>
+      <span>Home</span>
     </div>
     <div class="nav-item" id="navGroups" onclick="navTo('groups')">
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
@@ -984,11 +1068,30 @@ body.christmas-theme .top-bar{border-bottom-color:#c41e3a33!important}
       <span>Mensagens</span>
       <div class="nav-badge" id="navMsgsBadge" style="display:none">0</div>
     </div>
+    <div class="nav-item" id="navNotifs" onclick="navTo('notifs')">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+      <span>Avisos</span>
+      <div class="nav-badge" id="navNotifsBadge" style="display:none">0</div>
+    </div>
     <div class="nav-item" id="navProfile" onclick="openMyProfile()">
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
       <span>Perfil</span>
     </div>
   </div>
+</div>
+
+<!-- ═══ NOTIFICATIONS SCREEN ═══════════════════════════════════ -->
+<div class="screen" id="notifsScreen">
+  <div class="chat-head">
+    <button class="back-btn" onclick="navTo('feed')">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+    </button>
+    <div style="flex:1">
+      <div style="font-size:17px;font-weight:700;font-family:var(--display)">Notificações</div>
+    </div>
+    <button onclick="clearNotifs()" style="background:none;border:none;color:var(--acc);font-size:13px;font-weight:700;cursor:pointer;padding:6px 10px">Limpar</button>
+  </div>
+  <div style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch" id="notifsScreenList"></div>
 </div>
 
 <!-- ═══ PRIVATE CHAT SCREEN ════════════════════════════════ -->
@@ -1003,10 +1106,10 @@ body.christmas-theme .top-bar{border-bottom-color:#c41e3a33!important}
       <div class="cp-status" id="chatPeerStatus">● Online</div>
     </div>
     <div class="chat-head-actions">
-      <div class="tb-btn" onclick="currentPeer&&startCall(currentPeer.id,'voice')" title="Chamada de voz">
+      <div class="tb-btn" onclick="startCall('voice')" title="Chamada de voz">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/></svg>
       </div>
-      <div class="tb-btn" onclick="currentPeer&&startCall(currentPeer.id,'video')" title="Videochamada">
+      <div class="tb-btn" onclick="startCall('video')" title="Videochamada">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
       </div>
       <div class="tb-btn" onclick="openShareLink()" title="Partilhar">
@@ -1208,16 +1311,24 @@ body.christmas-theme .top-bar{border-bottom-color:#c41e3a33!important}
   <div><div class="nut-title">Novo utilizador!</div><div class="nut-name" id="nutName"></div></div>
 </div>
 
-<!-- ═══ INCOMING CALL TOAST ══════════════════════════════════ -->
-<div class="incoming-call-toast" id="incomingCallToast">
-  <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--acc),var(--acc2));display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0" id="ictAv"></div>
-  <div class="ict-info">
-    <div class="ict-type" id="ictType">Chamada de voz</div>
-    <div class="ict-name" id="ictName"></div>
+<!-- ═══ INCOMING CALL (full screen) ══ -->
+<div id="incomingCallScreen">
+  <div class="call-avatar-wrap">
+    <div class="call-ring"></div><div class="call-ring2"></div><div class="call-ring3"></div>
+    <div class="call-av" id="inCallAv"></div>
   </div>
-  <div class="ict-actions">
-    <button class="ict-btn decline" onclick="declineCall()" title="Recusar">📵</button>
-    <button class="ict-btn accept" onclick="acceptCall()" title="Aceitar">📞</button>
+  <div class="call-type-badge" id="inCallTypeBadge">📞 Chamada de voz</div>
+  <div class="call-name" id="inCallName">...</div>
+  <div class="call-status">Chamada recebida</div>
+  <div class="call-actions">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+      <button class="call-btn end" onclick="declineCall()"><svg viewBox="0 0 24 24"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/></svg></button>
+      <span style="font-size:12px;color:var(--tx2)">Recusar</span>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+      <button class="call-btn accept" onclick="acceptCall()"><svg viewBox="0 0 24 24"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/></svg></button>
+      <span style="font-size:12px;color:var(--tx2)">Atender</span>
+    </div>
   </div>
 </div>
 
@@ -1226,6 +1337,7 @@ body.christmas-theme .top-bar{border-bottom-color:#c41e3a33!important}
   <div class="call-avatar-wrap">
     <div class="call-ring"></div>
     <div class="call-ring2"></div>
+    <div class="call-ring"></div>
     <div class="call-av" id="callAv"></div>
   </div>
   <div class="call-timer" id="callTimer">0:00</div>
@@ -1244,25 +1356,31 @@ body.christmas-theme .top-bar{border-bottom-color:#c41e3a33!important}
   </div>
 </div>
 
-<!-- ═══ VIDEO CALL SCREEN ═════════════════════════════════════ -->
+<!-- ═══ VIDEO CALL SCREEN ══ -->
 <div id="videoCallScreen">
   <video id="remoteVideo" autoplay playsinline></video>
-  <video id="localVideo" autoplay playsinline muted></video>
-  <div class="video-name-overlay" id="videoCallName"></div>
-  <div class="video-timer" id="videoTimer">0:00</div>
+  <video id="localVideo" autoplay playsinline muted onclick="switchCamera()"></video>
+  <div class="video-name-bar">
+    <div class="video-peer-name" id="videoCallName">...</div>
+    <div class="video-timer-badge" id="videoTimer">0:00</div>
+  </div>
   <div class="video-controls">
-    <button class="call-btn mute" id="vidMuteBtn" onclick="toggleMute()" title="Mudo">
-      <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.91-3c-.49 0-.9.36-.98.85C16.52 14.2 14.47 16 12 16s-4.52-1.8-4.93-4.15c-.08-.49-.49-.85-.98-.85-.61 0-1.09.54-1 1.14.49 3 2.89 5.35 5.91 5.78V20c0 .55.45 1 1 1s1-.45 1-1v-2.08c3.02-.43 5.42-2.78 5.91-5.78.1-.6-.39-1.14-1-1.14z"/></svg>
-    </button>
-    <button class="call-btn end" onclick="endVideoCall()" title="Terminar">
-      <svg viewBox="0 0 24 24"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/></svg>
-    </button>
-    <button class="call-btn video" onclick="toggleCamera()" title="Câmera">
-      <svg viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
-    </button>
-    <button class="call-btn mute" onclick="switchCamera()" title="Trocar câmera" style="font-size:20px">🔄</button>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+      <button class="call-btn mute" id="vidMuteBtn" onclick="toggleMute()"><svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.91-3c-.49 0-.9.36-.98.85C16.52 14.2 14.47 16 12 16s-4.52-1.8-4.93-4.15c-.08-.49-.49-.85-.98-.85-.61 0-1.09.54-1 1.14.49 3 2.89 5.35 5.91 5.78V20c0 .55.45 1 1 1s1-.45 1-1v-2.08c3.02-.43 5.42-2.78 5.91-5.78.1-.6-.39-1.14-1-1.14z"/></svg></button>
+      <span style="font-size:11px;color:rgba(255,255,255,.7)">Mudo</span>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+      <button class="call-btn end" onclick="endVideoCall()"><svg viewBox="0 0 24 24"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/></svg></button>
+      <span style="font-size:11px;color:rgba(255,255,255,.7)">Terminar</span>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+      <button class="call-btn cam" id="camBtn" onclick="toggleCamera()"><svg viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg></button>
+      <span style="font-size:11px;color:rgba(255,255,255,.7)">Câmera</span>
+    </div>
   </div>
 </div>
+
+
 
 <!-- ═══ INSTALL FAB (sem ícone, sem "Chrome") ══════════════════ -->
 <button class="install-fab" id="installFab" onclick="installPWA()">
@@ -1287,6 +1405,57 @@ body.christmas-theme .top-bar{border-bottom-color:#c41e3a33!important}
     <div class="modal-footer">
       <button class="mf-btn ghost" onclick="closeModal('createRoomOv')">Cancelar</button>
       <button class="mf-btn prim" onclick="createGroupRoom()">Criar Sala</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══ SETTINGS MODAL ══ -->
+<div class="modal-ov" id="settingsOv">
+  <div class="modal" style="max-width:420px">
+    <div class="modal-head"><h3>⚙️ Definições</h3><button class="modal-close" onclick="closeModal('settingsOv')">✕</button></div>
+    <div class="modal-body">
+      <div class="settings-section">
+        <div class="settings-title">🔊 Som</div>
+        <div class="setting-row">
+          <div class="setting-ico">💬</div>
+          <div class="setting-info"><div class="setting-label">Som de mensagem</div><div class="setting-sub">Toque ao enviar/receber mensagens</div></div>
+          <label class="toggle-wrap"><input type="checkbox" id="settingMsgSound" checked onchange="saveSetting('msgSound',this.checked)"><span class="toggle-slider"></span></label>
+        </div>
+        <div class="setting-row">
+          <div class="setting-ico">🔊</div>
+          <div class="setting-info"><div class="setting-label">Notificações sonoras</div><div class="setting-sub">Som nas notificações push</div></div>
+          <label class="toggle-wrap"><input type="checkbox" id="settingNotifSound" checked onchange="saveSetting('notifSound',this.checked)"><span class="toggle-slider"></span></label>
+        </div>
+      </div>
+      <div class="settings-section">
+        <div class="settings-title">🎨 Aparência</div>
+        <div class="setting-row">
+          <div class="setting-ico">❄️</div>
+          <div class="setting-info"><div class="setting-label">Efeitos sazonais</div><div class="setting-sub">Neve no Natal, banners de feriados</div></div>
+          <label class="toggle-wrap"><input type="checkbox" id="settingSeasonal" checked onchange="saveSetting('seasonal',this.checked)"><span class="toggle-slider"></span></label>
+        </div>
+      </div>
+      <div class="settings-section" id="installSection">
+        <div class="settings-title">📲 Aplicação</div>
+        <div class="setting-row" id="installSettingRow">
+          <div class="setting-ico">📥</div>
+          <div class="setting-info"><div class="setting-label">Baixar para celular</div><div class="setting-sub">Instalar como app no seu dispositivo</div></div>
+          <button id="settingsInstallBtn" onclick="installFromSettings()" style="padding:8px 14px;background:var(--acc);border:none;border-radius:8px;color:#fff;font-size:12px;font-weight:700;cursor:pointer">Baixar</button>
+        </div>
+      </div>
+      <div class="settings-section">
+        <div class="settings-title">👤 Conta</div>
+        <div class="setting-row" style="cursor:pointer" onclick="closeModal('settingsOv');openEditProfile()">
+          <div class="setting-ico">✏️</div>
+          <div class="setting-info"><div class="setting-label">Editar perfil</div><div class="setting-sub">Nome, foto e bio</div></div>
+          <svg viewBox="0 0 24 24" fill="var(--tx3)" width="18" height="18"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+        </div>
+        <div class="setting-row" style="cursor:pointer" onclick="closeModal('settingsOv');doLogout()">
+          <div class="setting-ico">🚪</div>
+          <div class="setting-info"><div class="setting-label" style="color:var(--err)">Sair da conta</div><div class="setting-sub">Encerrar sessão</div></div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -1461,40 +1630,13 @@ function doLogout(){
 // ════════════════════════════════════════════════════════════════
 function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
 
-function enterApp(){
-  load(); // always reload fresh data
-  showScreen('appScreen');
-  // Reset nav state
-  currentRoom='geral';
-  currentPeer=null;
-  currentGroup=null;
-  // Render compose avatar
-  renderAv(document.getElementById('compAv'),CU,38,14);
-  // Seed example data for empty installs
-  seedData();
-  // Render UI
-  // Reset sidebar tab highlights
-  document.querySelectorAll('.lstab').forEach(t=>t.classList.remove('on'));
-  const firstLsTab=document.getElementById('lsRoomsTab');
-  if(firstLsTab) firstLsTab.classList.add('on');
-  lsTab='rooms';
-  switchLSTab('rooms',null);
-  document.getElementById('compRoomLabel').textContent='Geral';
-  renderPosts();
-  renderOnline();
-  renderRightGroups();
-  updateNotifBadge();
-  initPWA();
-  schedulePushes();
-}
-
 function navTo(tab){
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('on'));
   const navEl=document.getElementById('nav'+tab.charAt(0).toUpperCase()+tab.slice(1));
   if(navEl) navEl.classList.add('on');
   if(tab==='feed'){
     showScreen('appScreen');
-    renderPosts(); // refresh feed
+    renderPosts();
   } else if(tab==='groups'){
     load();
     renderGroupsList();
@@ -1503,7 +1645,26 @@ function navTo(tab){
     switchLSTab('users',document.getElementById('lsUsersTab'));
     showScreen('appScreen');
     openMobSidebar();
+  } else if(tab==='notifs'){
+    renderNotifsScreen();
+    showScreen('notifsScreen');
   }
+}
+function renderNotifsScreen(){
+  const c=document.getElementById('notifsScreenList');
+  if(!c)return;
+  _notifs.forEach(n=>n.read=true);
+  save();
+  updateNotifBadge();
+  if(!_notifs.length){
+    c.innerHTML='<div class="notifs-empty"><svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg><p>Sem notificações</p><span>As notificações vão aparecer aqui</span></div>';
+    return;
+  }
+  c.innerHTML=_notifs.map(n=>`
+    <div class="notif-item ${n.read?'':'unread'}" onclick="markRead('${n.id}')">
+      <div class="ni-ico">${n.ico||'🔔'}</div>
+      <div><div class="ni-txt">${esc(n.title||'')} ${n.body?'— '+esc(n.body):''}</div><div class="ni-time">${_relTime(n.ts)}</div></div>
+    </div>`).join('');
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -1595,8 +1756,8 @@ function sendPost(){
     room:currentRoom,likes:[],comments:[]};
   _posts.unshift(p);
   CU.posts=(CU.posts||0)+1;updUser(CU);save();
-  document.getElementById('postTA').value='';rmCompImg();
-  renderPosts();
+  document.getElementById('postTA').value='';document.getElementById('postTA').style.height='auto';rmCompImg();
+  playSendSound();renderPosts();
   pushNotif('📝',CU.name+' publicou',txt.substring(0,50)||(p.img?'Enviou uma foto':''),true);
 }
 
@@ -1612,64 +1773,6 @@ function renderPosts(){
     </div>`;return;
   }
   c.innerHTML=rp.map(buildPostCard).join('');
-}
-function buildPostCard(p){
-  const u=getUser(p.uid);
-  const liked=p.likes.includes(CU.id);
-  const mine=p.uid===CU.id;
-  return`<div class="post-card" id="pc_${p.id}">
-    <div class="post-head">
-      ${mkAv(u,38,13)}
-      <div class="post-author-info" onclick="openProfile('${p.uid}')">
-        <div class="pa-name">${esc(p.uname||u.name)}</div>
-        <div class="pa-time">${fmtDate(p.ts)} · ${ROOMS.find(r=>r.id===p.room)?.icon||''}${ROOMS.find(r=>r.id===p.room)?.name||p.room}</div>
-      </div>
-      <button class="post-menu-btn" onclick="showPostMenu(event,'${p.id}','${mine}')">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
-      </button>
-    </div>
-    ${p.txt?`<div class="post-txt">${esc(p.txt)}</div>`:''}
-    ${p.img?`<img class="post-img" src="${p.img}" onclick="openLightbox('${p.img}')" loading="lazy">`:''}
-    <div class="post-stats">
-      <span>${p.likes.length>0?`❤️ ${p.likes.length}`:''}</span>
-      <span>${p.comments.length>0?`${p.comments.length} comentário${p.comments.length>1?'s':''}`:''}</span>
-    </div>
-    <div class="post-actions">
-      <button class="pa-btn ${liked?'liked':''}" onclick="toggleLike('${p.id}')">
-        <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-        Adorar
-      </button>
-      <button class="pa-btn" onclick="toggleComments('${p.id}')">
-        <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/></svg>
-        Comentar
-      </button>
-      <button class="pa-btn" onclick="openShare('${esc(p.txt||'Post')}','')">
-        <svg viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/></svg>
-        Partilhar
-      </button>
-      ${!mine?`<button class="pa-btn" onclick="openPrivate('${p.uid}')">
-        <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
-        Msg
-      </button>`:''}
-    </div>
-    <div class="comments-wrap" id="cw_${p.id}">
-      <div class="cmt-list" id="cl_${p.id}">
-        ${(p.comments||[]).map(c=>{
-          const cu=getUser(c.uid);
-          return`<div class="cmt">
-            ${mkAv(cu,28,10)}
-            <div><div class="cmt-bubble"><div class="cmt-name" onclick="openProfile('${c.uid}')">${esc(c.uname||cu.name)}</div><div class="cmt-txt">${esc(c.txt)}</div></div>
-            <div class="cmt-time">${fmtDate(c.ts)}</div></div>
-          </div>`;
-        }).join('')}
-      </div>
-      <div class="cmt-input-row">
-        ${mkAv(CU,28,10)}
-        <input type="text" class="cmt-in" id="ci_${p.id}" placeholder="Escreva um comentário..." onkeydown="if(event.key==='Enter')addComment('${p.id}')">
-        <button class="cmt-send" onclick="addComment('${p.id}')"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg></button>
-      </div>
-    </div>
-  </div>`;
 }
 function toggleLike(pid){
   const p=_posts.find(x=>x.id===pid);if(!p)return;
@@ -1687,7 +1790,7 @@ function addComment(pid){
   const p=_posts.find(x=>x.id===pid);if(!p)return;
   p.comments.push({id:uid(),uid:CU.id,uname:CU.name,uavatar:CU.avatar,txt,ts:Date.now()});
   if(p.uid!==CU.id)addNotif('💬',CU.name+' comentou',txt.substring(0,60));
-  save();el.value='';
+  save();playSendSound();el.value='';
   renderPosts();setTimeout(()=>document.getElementById('cw_'+pid)?.classList.add('open'),50);
 }
 function showPostMenu(e,pid,mine){
@@ -1770,33 +1873,6 @@ function closePrivate(){
 function openProfileFromChat(){if(currentPeer)openProfile(currentPeer.id);}
 
 function convKey(a,b){return[a,b].sort().join('__');}
-function renderChatMsgs(){
-  if(!currentPeer||!CU){return;}
-  load(); // get fresh conv data
-  const key=convKey(CU.id,currentPeer.id);
-  const msgs=(_convs[key]||[]);
-  const c=document.getElementById('chatMsgs');
-  if(!msgs.length){
-    c.innerHTML=`<div class="empty-state"><div class="empty-icon">🔒</div>
-      <div class="empty-title">Conversa privada com ${esc(currentPeer.name)}</div>
-      <div class="empty-sub">Suas mensagens são visíveis apenas para vocês dois</div></div>`;
-    return;
-  }
-  c.innerHTML=msgs.map(m=>{
-    const mine=m.from===CU.id;
-    const u=mine?CU:currentPeer;
-    return`<div class="msg-group ${mine?'mine':''}" style="max-width:78%">
-      ${!mine?mkAv(u,28,10,'align-self:flex-end'):''}
-      <div class="msg-content">
-        ${m.img?`<div class="msg-img-wrap"><img src="${m.img}" onclick="openLightbox('${m.img}')"></div>`:''}
-        ${m.txt?`<div class="msg-bubble">${esc(m.txt)}</div>`:''}
-        <div class="msg-time">${fmtTime(m.ts)}</div>
-      </div>
-    </div>`;
-  }).join('');
-  scrollBottom('chatMsgs');
-}
-
 function previewChatImg(e){
   const f=e.target.files[0];if(!f)return;
   const r=new FileReader();r.onload=ev=>{
@@ -1941,73 +2017,6 @@ function filterGroups(val){
   </div>`).join('');
 }
 
-function openGroupChat(gid){
-  load();
-  const g=_groups.find(x=>x.id===gid);
-  if(!g){console.warn('Group not found:',gid);return;}
-  currentGroup=g;
-  renderGroupsList();
-  renderGroupChatPanel();
-  renderGroupDetailPanel();
-  const dp=document.getElementById('grpDetailPanel');
-  dp.style.display='flex';
-  dp.style.flexDirection='column';
-  dp.style.overflow='hidden';
-}
-
-function renderGroupChatPanel(){
-  const g=currentGroup;
-  const myRole=g.members.find(m=>m.id===CU.id)?.role||'member';
-  const avHtml=g.avatar?`<img src="${g.avatar}" style="width:38px;height:38px;object-fit:cover;border-radius:10px">`:`<div class="av" style="width:38px;height:38px;border-radius:10px;font-size:16px">${g.icon||'👥'}</div>`;
-  const msgs=(g.messages||[]);
-  const msgsHtml=msgs.length?msgs.map(m=>{
-    const u=getUser(m.uid);const mine=m.uid===CU.id;
-    return`<div class="grp-msg-group ${mine?'mine':''}" style="max-width:78%">
-      ${!mine?mkAv(u,28,10,'align-self:flex-end'):''}
-      <div class="msg-content">
-        ${!mine?`<div class="grp-sender">${esc(u.name)}</div>`:''}
-        ${m.img?`<div class="msg-img-wrap"><img src="${m.img}" onclick="openLightbox('${m.img}')"></div>`:''}
-        ${m.txt?`<div class="msg-bubble">${esc(m.txt)}</div>`:''}
-        <div class="msg-time">${fmtTime(m.ts)}</div>
-      </div>
-    </div>`;
-  }).join(''):`<div class="empty-state"><div class="empty-icon">💬</div><div class="empty-title">Nenhuma mensagem</div><div class="empty-sub">Seja o primeiro a escrever!</div></div>`;
-
-  document.getElementById('groupChatPanel').innerHTML=`
-    <div class="gcp-head">
-      ${avHtml}
-      <div class="gcp-info" onclick="renderGroupDetailPanel();document.getElementById('grpDetailPanel').style.display='flex'">
-        <div class="gcp-name">${esc(g.name)}</div>
-        <div class="gcp-sub">${g.members.length} membros · ${myRole==='admin'?'👑 Admin':'Membro'}</div>
-      </div>
-      <div style="display:flex;gap:6px">
-        ${myRole==='admin'?`<div class="tb-btn" onclick="openManageMembers()" title="Gerenciar membros"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></div>`:''}
-        <div class="tb-btn" onclick="openShare('${esc(g.name)}','')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/></svg></div>
-        <div class="tb-btn" onclick="leaveGroup('${g.id}')" title="Sair do grupo"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg></div>
-      </div>
-    </div>
-    <div class="gcp-msgs" id="grpMsgs">${msgsHtml}</div>
-    <div class="chat-input-bar">
-      <div class="chat-img-preview-bar" id="grpImgPrev" style="display:none">
-        <img id="grpPrevImg" src="" style="height:48px;width:48px;object-fit:cover;border-radius:6px">
-        <span style="font-size:12px;color:var(--tx2);flex:1">Imagem pronta</span>
-        <button onclick="removeGrpImg()" style="background:none;border:none;color:var(--err);cursor:pointer;font-size:18px">✕</button>
-      </div>
-      <div class="chat-inp-row">
-        <label class="ci-btn" style="cursor:pointer">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
-          <input type="file" accept="image/*" style="display:none" onchange="previewGrpImg(event)">
-        </label>
-        <textarea class="chat-ta" id="grpTA" placeholder="Mensagem para ${esc(g.name)}..." rows="1" oninput="autoResize(this)"></textarea>
-        <button class="ci-btn ci-send" onclick="sendGroupMsg()">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
-        </button>
-      </div>
-    </div>`;
-  scrollBottom('grpMsgs');
-  document.getElementById('grpTA')?.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendGroupMsg();}});
-}
-
 let grpImgData=null;
 function previewGrpImg(e){
   const f=e.target.files[0];if(!f)return;
@@ -2018,19 +2027,6 @@ function previewGrpImg(e){
   };r.readAsDataURL(f);e.target.value='';
 }
 function removeGrpImg(){grpImgData=null;document.getElementById('grpImgPrev').style.display='none';}
-
-function sendGroupMsg(){
-  const ta=document.getElementById('grpTA');if(!ta)return;
-  const txt=ta.value.trim();if(!txt&&!grpImgData)return;
-  if(!currentGroup.messages)currentGroup.messages=[];
-  currentGroup.messages.push({id:uid(),uid:CU.id,txt,img:grpImgData,ts:Date.now()});
-  const gi=_groups.findIndex(g=>g.id===currentGroup.id);
-  if(gi>-1)_groups[gi]=currentGroup;
-  save();ta.value='';ta.style.height='auto';removeGrpImg();
-  renderGroupChatPanel();
-  // notify members
-  currentGroup.members.filter(m=>m.id!==CU.id).forEach(m=>addNotif('👥',`${CU.name} no ${currentGroup.name}`,txt.substring(0,50)||(grpImgData?'Enviou uma foto':'')));
-}
 
 function renderGroupDetailPanel(){
   const g=currentGroup;if(!g)return;
@@ -2180,34 +2176,6 @@ function addMembersToGroup(){
 // ════════════════════════════════════════════════════════════════
 // PROFILE
 // ════════════════════════════════════════════════════════════════
-function openProfile(uid2){
-  if(!uid2||uid2==='undefined')return;
-  load();
-  const u=_users.find(x=>x.id===uid2)||{id:uid2,name:'Usuário',isAnon:true,handle:'',bio:'',followers:0,following:0,avatar:null,joined:''};
-  const isMe=uid2===CU.id;
-  const avBig=document.getElementById('profileAvBig');
-  renderAv(avBig,u,72,26);
-  document.getElementById('profileModalBody').innerHTML=`
-    <div class="profile-banner-inner">
-      <div class="pm-name">${esc(u.name)}</div>
-      <div class="pm-handle">${esc(u.handle||'')}</div>
-      ${u.bio?`<div class="pm-bio">${esc(u.bio)}</div>`:''}
-      <div class="pm-stats">
-        <div class="pm-stat"><div class="pm-stat-n">${_posts.filter(p=>p.uid===u.id).length}</div><div class="pm-stat-l">Posts</div></div>
-        <div class="pm-stat"><div class="pm-stat-n">${u.followers||0}</div><div class="pm-stat-l">Seguidores</div></div>
-        <div class="pm-stat"><div class="pm-stat-n">${u.following||0}</div><div class="pm-stat-l">Seguindo</div></div>
-      </div>
-      ${u.joined?`<div style="font-size:12px;color:var(--tx2);margin-top:8px">📅 Membro desde ${u.joined}</div>`:''}
-    </div>
-    <div class="pm-actions">
-      ${isMe?`<button class="pm-btn prim" onclick="closeModal('profileModalOv');openEditProfile()">✏️ Editar Perfil</button>`
-        :`<button class="pm-btn prim" onclick="closeModal('profileModalOv');openPrivate('${u.id}')">💬 Mensagem</button>
-          <button class="pm-btn ghost" onclick="addToGroup_prompt('${u.id}')">👥 Add ao Grupo</button>
-          <button class="pm-btn ghost" onclick="closeModal('profileModalOv');openShare('${esc(u.name)}','')">🔗 Partilhar</button>`
-      }
-    </div>`;
-  openModal('profileModalOv');
-}
 function openMyProfile(){openProfile(CU.id);}
 
 function addToGroup_prompt(uid2){
@@ -2310,6 +2278,8 @@ function addNotif(ico,title,body){
 }
 function updateNotifBadge(){
   const unread=_notifs.filter(n=>!n.read).length;
+  const nb=document.getElementById('navNotifsBadge');
+  if(nb){nb.textContent=unread>9?'9+':unread;nb.style.display=unread>0?'flex':'none';}
   const b=document.getElementById('notifBadge');
   b.style.display=unread>0?'flex':'none';
   b.textContent=unread>9?'9+':unread;
@@ -2324,7 +2294,7 @@ function renderNotifList(){
     </div>`).join('');
 }
 function markRead(id){const n=_notifs.find(x=>x.id===id);if(n)n.read=true;save();updateNotifBadge();renderNotifList();}
-function clearNotifs(){_notifs=[];save();updateNotifBadge();renderNotifList();}
+function clearNotifs(){_notifs=[];save();updateNotifBadge();renderNotifList();if(document.getElementById('notifsScreen')?.classList.contains('active'))renderNotifsScreen();}
 function toggleNotifPanel(){
   const p=document.getElementById('notifPanel');p.classList.toggle('open');
   if(p.classList.contains('open')){_notifs.forEach(n=>n.read=true);save();updateNotifBadge();renderNotifList();}
@@ -2589,26 +2559,14 @@ function checkNewUsers(){
 // ════════════════════════════════════════════════════════════════
 // VOICE & VIDEO CALLS (WebRTC simulated with UI)
 // ════════════════════════════════════════════════════════════════
-let callActive=false, callPeer=null, callType='voice';
+let callActive=false,callPeer=null,callType='voice';
 let callStartTime=null, callTimerInterval=null;
 let localStream=null, peerConnection=null;
-let isMuted=false, cameraOn=true;
+let isMuted=false, camEnabled=true;
 
-function startCall(uid2,type='voice'){
-  const u=_users.find(x=>x.id===uid2);if(!u)return;
-  callPeer=u;callType=type;callActive=true;
-  if(type==='voice') _startVoiceCallUI(u);
-  else _startVideoCallUI(u);
-  // Simulate call connecting after 2s
-  setTimeout(()=>{
-    if(!callActive)return;
-    document.getElementById('callStatus').textContent='● Em chamada';
-    const cs=document.getElementById('callStatus');
-    if(cs)cs.style.color='var(--ok)';
-    document.getElementById('callTimer').style.display='block';
-    callStartTime=Date.now();
-    callTimerInterval=setInterval(updateCallTimer,1000);
-  },2000+Math.random()*1500);
+function startCall(type){
+  const peer=currentPeer;if(!peer)return;
+  _beginCall(peer,type||'voice',false);
 }
 function _startVoiceCallUI(u){
   const av=document.getElementById('callAv');
@@ -2666,36 +2624,36 @@ function updateCallTimer(){
   if(t2)t2.textContent=str;
 }
 function endCall(){
-  callActive=false;callPeer=null;
-  if(callTimerInterval)clearInterval(callTimerInterval);
-  callTimerInterval=null;callStartTime=null;
-  document.getElementById('callScreen').classList.remove('active');
-  isMuted=false;
+  callActive=false;callPeer=null;callStartTime=null;
+  if(callTimerInterval){clearInterval(callTimerInterval);callTimerInterval=null;}
+  if(localStream){try{localStream.getTracks().forEach(t=>t.stop());}catch(e){}localStream=null;}
+  document.getElementById('callScreen')?.classList.remove('active');
+  isMuted=false;camEnabled=true;
+  const mb=document.getElementById('muteBtn');if(mb)mb.className='call-btn mute';
 }
 function endVideoCall(){
-  callActive=false;callPeer=null;
-  if(callTimerInterval)clearInterval(callTimerInterval);
-  callTimerInterval=null;callStartTime=null;
-  if(localStream){localStream.getTracks().forEach(t=>t.stop());localStream=null;}
-  document.getElementById('videoCallScreen').classList.remove('active');
-  document.getElementById('localVideo').srcObject=null;
-  document.getElementById('remoteVideo').srcObject=null;
-  isMuted=false;
+  callActive=false;callPeer=null;callStartTime=null;
+  if(callTimerInterval){clearInterval(callTimerInterval);callTimerInterval=null;}
+  if(localStream){try{localStream.getTracks().forEach(t=>t.stop());}catch(e){}localStream=null;}
+  document.getElementById('videoCallScreen')?.classList.remove('active');
+  try{document.getElementById('localVideo').srcObject=null;document.getElementById('remoteVideo').srcObject=null;}catch(e){}
+  isMuted=false;camEnabled=true;
+  const cb=document.getElementById('camBtn');if(cb)cb.className='call-btn cam';
 }
 function toggleMute(){
   isMuted=!isMuted;
-  if(localStream) localStream.getAudioTracks().forEach(t=>t.enabled=!isMuted);
-  const btns=[document.getElementById('muteBtn'),document.getElementById('vidMuteBtn')];
-  btns.forEach(b=>{if(b)b.style.background=isMuted?'#ef4444':'var(--s2)';});
-  pushNotif(isMuted?'🔇':'🔊',isMuted?'Microfone desligado':'Microfone ligado','',true);
+  if(localStream)localStream.getAudioTracks().forEach(t=>t.enabled=!isMuted);
+  ['muteBtn','vidMuteBtn'].forEach(id=>{const b=document.getElementById(id);if(b)b.className='call-btn mute'+(isMuted?' muted':'');});
 }
 function upgradeToVideo(){
-  endCall();
-  if(callPeer) startCall(callPeer.id,'video');
+  const peer=callPeer;endCall();
+  if(peer){callPeer=peer;_beginCall(peer,'video',false);}
 }
 function toggleCamera(){
-  cameraOn=!cameraOn;
-  if(localStream) localStream.getVideoTracks().forEach(t=>t.enabled=cameraOn);
+  camEnabled=!camEnabled;
+  if(localStream)localStream.getVideoTracks().forEach(t=>t.enabled=camEnabled);
+  const btn=document.getElementById('camBtn');
+  if(btn)btn.className='call-btn cam'+(camEnabled?'':' muted');
 }
 function switchCamera(){
   pushNotif('🔄','Câmera alternada','',true);
@@ -2704,32 +2662,13 @@ function switchCamera(){
 // Incoming call simulation
 let _incomingCallTimer=null;
 function simulateIncomingCall(){
-  const callers=_users.filter(u=>u.id!==CU.id&&!['bot1','bot2','bot3'].includes(u.id));
   const bots=['bot2','bot3'];
-  const all=[...callers,...bots.map(id=>_users.find(u=>u.id===id)).filter(Boolean)];
+  const all=bots.map(id=>_users.find(u=>u.id===id)).filter(Boolean);
   if(!all.length)return;
   const caller=all[Math.floor(Math.random()*all.length)];
   const isVideo=Math.random()>.6;
-  document.getElementById('ictAv').textContent=ini(caller.name);
-  document.getElementById('ictName').textContent=caller.name;
-  document.getElementById('ictType').textContent=isVideo?'Vídeo chamada':'Chamada de voz';
-  callPeer=caller;callType=isVideo?'video':'voice';
-  const t=document.getElementById('incomingCallToast');
-  t.classList.add('show');
-  _incomingCallTimer=setTimeout(()=>t.classList.remove('show'),15000);
+  showIncomingCall(caller,isVideo?'video':'voice');
 }
-function acceptCall(){
-  document.getElementById('incomingCallToast').classList.remove('show');
-  if(_incomingCallTimer)clearTimeout(_incomingCallTimer);
-  if(callPeer) startCall(callPeer.id,callType);
-}
-function declineCall(){
-  document.getElementById('incomingCallToast').classList.remove('show');
-  if(_incomingCallTimer)clearTimeout(_incomingCallTimer);
-  callPeer=null;
-  pushNotif('📵','Chamada recusada','',true);
-}
-
 // ════════════════════════════════════════════════════════════════
 // GROUP ROOMS (sub-rooms inside groups)
 // ════════════════════════════════════════════════════════════════
@@ -2768,7 +2707,7 @@ function switchGroupRoom(roomId){
 function requestPushPermission(){
   if('Notification' in window && Notification.permission==='default'){
     Notification.requestPermission().then(perm=>{
-      if(perm==='granted') pushNotif('🔔','Notificações ativadas!','Você receberá alertas do FreeMode876');
+      if(perm==='granted') pushNotif('📢','Notificações ativadas!','Você receberá alertas do FreeMode876');
     });
   }
 }
@@ -2798,7 +2737,6 @@ function updateInstallFab(){
 // ════════════════════════════════════════════════════════════════
 
 // Override openProfile to add follow button
-const _origOpenProfile=openProfile;
 function openProfile(uid2){
   if(!uid2||uid2==='undefined')return;
   load();
@@ -2837,7 +2775,6 @@ function openProfile(uid2){
 }
 
 // Override buildPostCard to render links and add call button
-const _origBuildPostCard=buildPostCard;
 function buildPostCard(p){
   const u=getUser(p.uid);
   const liked=p.likes.includes(CU.id);
@@ -2901,7 +2838,6 @@ function buildPostCard(p){
 }
 
 // Override renderGroupChatPanel to add rooms bar
-const _origRenderGroupChatPanel=renderGroupChatPanel;
 function renderGroupChatPanel(){
   const g=currentGroup;if(!g)return;
   const myRole=g.members.find(m=>m.id===CU.id)?.role||'member';
@@ -2974,7 +2910,6 @@ function renderGroupChatPanel(){
 }
 
 // Override sendGroupMsg to include room
-const _origSendGroupMsg=sendGroupMsg;
 function sendGroupMsg(){
   const ta=document.getElementById('grpTA');if(!ta)return;
   const txt=ta.value.trim();if(!txt&&!grpImgData)return;
@@ -2991,7 +2926,6 @@ function sendGroupMsg(){
 }
 
 // Override enterApp to add new init calls
-const _origEnterApp=enterApp;
 function enterApp(){
   load();
   showScreen('appScreen');
@@ -3031,7 +2965,6 @@ function openGroupChatMobile(){
 }
 
 // Override openGroupChat to handle mobile
-const _origOpenGroupChat=openGroupChat;
 function openGroupChat(gid){
   load();
   const g=_groups.find(x=>x.id===gid);
@@ -3048,7 +2981,6 @@ function openGroupChat(gid){
 }
 
 // ── Private chat also renders links
-const _origRenderChatMsgs=renderChatMsgs;
 function renderChatMsgs(){
   if(!currentPeer||!CU)return;
   load();
@@ -3099,6 +3031,177 @@ window.addEventListener('beforeinstallprompt',e=>{
 // ════════════════════════════════════════════════════════════════
 // BOOT — runs after full DOM parse
 // ════════════════════════════════════════════════════════════════
+
+// ═══════════════════════════════════════════════════════
+// SETTINGS STATE
+// ═══════════════════════════════════════════════════════
+let _settings={msgSound:true,notifSound:true,seasonal:true};
+let _incomingCallPeer=null,_incomingCallType='voice';
+// Music state
+
+function loadSettings(){
+  const saved=S.g('fm_settings');
+  if(saved)_settings=Object.assign(_settings,saved);
+}
+function saveSetting(key,val){_settings[key]=val;S.s('fm_settings',_settings);}
+function openSettings(){
+  openModal('settingsOv');
+  document.getElementById('settingMsgSound').checked=_settings.msgSound!==false;
+  document.getElementById('settingNotifSound').checked=_settings.notifSound!==false;
+  document.getElementById('settingSeasonal').checked=_settings.seasonal!==false;
+  _updateInstallBtn();
+}
+function _updateInstallBtn(){
+  const row=document.getElementById('installSettingRow');
+  const btn=document.getElementById('settingsInstallBtn');
+  if(!row||!btn)return;
+  const installed=window.matchMedia('(display-mode:standalone)').matches||window.navigator.standalone;
+  if(installed){btn.textContent='Instalado ✓';btn.disabled=true;btn.style.background='var(--ok)';}
+  else if(deferredInstall){btn.textContent='Baixar';btn.disabled=false;btn.style.background='var(--acc)';}
+  else{row.style.display='none';}
+}
+async function installFromSettings(){
+  if(!deferredInstall)return;
+  const btn=document.getElementById('settingsInstallBtn');
+  if(btn){btn.textContent='A instalar...';btn.disabled=true;}
+  try{
+    await deferredInstall.prompt();
+    const r=await deferredInstall.userChoice;
+    if(r.outcome==='accepted'){deferredInstall=null;if(btn){btn.textContent='Instalado ✓';btn.style.background='var(--ok)';}}
+    else{if(btn){btn.textContent='Baixar';btn.disabled=false;}}
+  }catch(e){if(btn){btn.textContent='Baixar';btn.disabled=false;}}
+}
+
+// ═══════════════════════════════════════════════════════
+// SOUND EFFECTS (Web Audio API — no files needed)
+// ═══════════════════════════════════════════════════════
+let _audioCtx=null;
+function _getCtx(){if(!_audioCtx)_audioCtx=new(window.AudioContext||window.webkitAudioContext)();return _audioCtx;}
+function playSendSound(){
+  if(!_settings.msgSound)return;
+  try{const ctx=_getCtx(),o=ctx.createOscillator(),g=ctx.createGain();
+    o.connect(g);g.connect(ctx.destination);
+    o.frequency.setValueAtTime(880,ctx.currentTime);
+    o.frequency.exponentialRampToValueAtTime(1320,ctx.currentTime+0.1);
+    g.gain.setValueAtTime(0.12,ctx.currentTime);g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.18);
+    o.start();o.stop(ctx.currentTime+0.18);}catch(e){}
+}
+function playReceiveSound(){
+  if(!_settings.msgSound)return;
+  try{const ctx=_getCtx(),o=ctx.createOscillator(),g=ctx.createGain();
+    o.type='sine';o.connect(g);g.connect(ctx.destination);
+    o.frequency.setValueAtTime(660,ctx.currentTime);
+    o.frequency.exponentialRampToValueAtTime(880,ctx.currentTime+0.08);
+    g.gain.setValueAtTime(0.08,ctx.currentTime);g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.15);
+    o.start();o.stop(ctx.currentTime+0.15);}catch(e){}
+}
+function playNotifSound(){
+  if(!_settings.notifSound)return;
+  try{const ctx=_getCtx();[0,0.12,0.24].forEach((t,i)=>{
+    const o=ctx.createOscillator(),g=ctx.createGain();
+    o.frequency.value=[880,1100,1320][i];o.connect(g);g.connect(ctx.destination);
+    g.gain.setValueAtTime(0.07,ctx.currentTime+t);g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+t+0.1);
+    o.start(ctx.currentTime+t);o.stop(ctx.currentTime+t+0.1);});}catch(e){}
+}
+function playCallRingtone(){
+  if(!_settings.notifSound)return;
+  try{const ctx=_getCtx();let t=ctx.currentTime;
+    for(let i=0;i<3;i++){const o=ctx.createOscillator(),g=ctx.createGain();
+      o.type='sine';o.frequency.value=480;o.connect(g);g.connect(ctx.destination);
+      g.gain.setValueAtTime(0.18,t);g.gain.exponentialRampToValueAtTime(0.001,t+0.4);
+      o.start(t);o.stop(t+0.4);t+=0.6;}}catch(e){}
+}
+
+
+// ═══════════════════════════════════════════════════════
+// CALL SYSTEM (WebRTC-ready UI)
+// ═══════════════════════════════════════════════════════
+function showIncomingCall(peer,type){
+  _incomingCallPeer=peer;_incomingCallType=type;
+  const av=document.getElementById('inCallAv');
+  if(av){if(peer.avatar)av.innerHTML=`<img src="${peer.avatar}">`;else av.textContent=ini(peer.name);}
+  const nm=document.getElementById('inCallName');if(nm)nm.textContent=peer.name;
+  const tb=document.getElementById('inCallTypeBadge');
+  if(tb)tb.textContent=type==='video'?'📹 Videochamada':'📞 Chamada de voz';
+  document.getElementById('incomingCallScreen').classList.add('active');
+  playCallRingtone();
+  // Auto-dismiss after 25s
+  setTimeout(()=>document.getElementById('incomingCallScreen')?.classList.remove('active'),25000);
+}
+function acceptCall(){
+  document.getElementById('incomingCallScreen').classList.remove('active');
+  if(_incomingCallPeer)_beginCall(_incomingCallPeer,_incomingCallType,true);
+}
+function declineCall(){
+  document.getElementById('incomingCallScreen').classList.remove('active');
+  _incomingCallPeer=null;
+}
+function _beginCall(peer,type,incoming){
+  callActive=true;callPeer=peer;callType=type;
+  if(type==='video'){_startVideoCall(peer);}
+  else{
+    const av=document.getElementById('callAv');
+    if(av){if(peer.avatar)av.innerHTML=`<img src="${peer.avatar}">`;else av.textContent=ini(peer.name);}
+    document.getElementById('callName').textContent=peer.name;
+    document.getElementById('callStatus').textContent=incoming?'● Em chamada':'A ligar...';
+    document.getElementById('callStatus').style.color=incoming?'var(--ok)':'';
+    const ct=document.getElementById('callTimer');if(ct)ct.style.display='none';
+    document.getElementById('callScreen').classList.add('active');
+    if(!incoming){
+      setTimeout(()=>{
+        if(!callActive)return;
+        document.getElementById('callStatus').textContent='● Em chamada';
+        document.getElementById('callStatus').style.color='var(--ok)';
+        const t=document.getElementById('callTimer');if(t)t.style.display='block';
+        _startCallTimer();
+      },1500+Math.random()*1500);
+    } else {
+      const t=document.getElementById('callTimer');if(t)t.style.display='block';
+      _startCallTimer();
+    }
+    navigator.mediaDevices?.getUserMedia({audio:true}).then(s=>{localStream=s;}).catch(()=>{});
+  }
+}
+function _startVideoCall(peer){
+  document.getElementById('videoCallName').textContent=peer.name;
+  document.getElementById('videoTimer').textContent='0:00';
+  document.getElementById('videoCallScreen').classList.add('active');
+  _startCallTimer();
+  navigator.mediaDevices?.getUserMedia({video:true,audio:true}).then(stream=>{
+    localStream=stream;
+    document.getElementById('localVideo').srcObject=stream;
+    stream.getAudioTracks().forEach(t=>t.enabled=!isMuted);
+    stream.getVideoTracks().forEach(t=>t.enabled=camEnabled);
+    // Animate canvas for remote video simulation
+    const canvas=document.createElement('canvas');canvas.width=640;canvas.height=480;
+    const ctx2=canvas.getContext('2d');
+    const loop=()=>{if(!callActive)return;const T=Date.now()/1000;
+      ctx2.fillStyle=`hsl(${(T*8)%360},25%,10%)`;ctx2.fillRect(0,0,640,480);
+      ctx2.fillStyle='rgba(108,99,255,.12)';
+      for(let i=0;i<5;i++){ctx2.beginPath();ctx2.arc(320+Math.sin(T+i*1.3)*150,240+Math.cos(T*.9+i)*100,15+i*12,0,Math.PI*2);ctx2.fill();}
+      requestAnimationFrame(loop);};loop();
+    document.getElementById('remoteVideo').srcObject=canvas.captureStream(20);
+  }).catch(()=>{});
+}
+function _startCallTimer(){
+  if(callTimerInterval)clearInterval(callTimerInterval);
+  callStartTime=Date.now();
+  callTimerInterval=setInterval(()=>{
+    if(!callStartTime)return;
+    const s=Math.floor((Date.now()-callStartTime)/1000);
+    const str=`${Math.floor(s/60)}:${(s%60<10?'0':'')+s%60}`;
+    const a=document.getElementById('callTimer'),b=document.getElementById('videoTimer');
+    if(a)a.textContent=str;if(b)b.textContent=str;
+  },1000);
+}
+function maybeSimulateCall(){
+  if(!CU||callActive||document.getElementById('incomingCallScreen').classList.contains('active'))return;
+  const callers=_users.filter(u=>u.id!==CU.id);if(!callers.length)return;
+  const caller=callers[Math.floor(Math.random()*callers.length)];
+  showIncomingCall(caller,Math.random()>.6?'video':'voice');
+  setTimeout(()=>maybeSimulateCall(),90000+Math.random()*120000);
+}
+
 document.addEventListener('DOMContentLoaded', function() {
 
   // Re-bind modal overlay clicks (needed because HTML parsed before JS)
