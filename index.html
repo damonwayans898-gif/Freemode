@@ -606,6 +606,212 @@ img{display:block}
 @media(min-width:701px){
   .mob-only{display:none!important}
 }
+/* ══════════════════════════════════════════════════
+   SEASONAL / HOLIDAY THEME
+══════════════════════════════════════════════════ */
+.snowflake{position:fixed;top:-20px;color:#a8d8ea;font-size:1em;z-index:9999;
+  pointer-events:none;animation:snowfall linear infinite;opacity:0.8}
+@keyframes snowfall{0%{transform:translateY(0) rotate(0deg);opacity:0.8}
+  100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
+body.christmas-theme{background:linear-gradient(180deg,#0a0a1a 0%,#0c0d12 100%)!important}
+body.christmas-theme .top-bar{border-bottom-color:#c41e3a33!important}
+.holiday-banner{position:fixed;top:var(--hh);left:0;right:0;z-index:90;
+  padding:8px 16px;text-align:center;font-size:13px;font-weight:600;
+  display:none;animation:fadeUp .4s ease}
+.holiday-banner.show{display:block}
+.hb-christmas{background:linear-gradient(90deg,#c41e3a,#165b33,#c41e3a);background-size:200%;animation:hbSlide 3s linear infinite;color:#fff}
+.hb-independence{background:linear-gradient(90deg,#009A44,#000,#CE1126);background-size:200%;animation:hbSlide 3s linear infinite;color:#fff}
+.hb-women{background:linear-gradient(90deg,#FF69B4,#9B59B6,#FF69B4);background-size:200%;animation:hbSlide 3s linear infinite;color:#fff}
+.hb-workers{background:linear-gradient(90deg,#CC0000,#FF6600,#CC0000);background-size:200%;animation:hbSlide 3s linear infinite;color:#fff}
+@keyframes hbSlide{0%{background-position:0%}100%{background-position:200%}}
+
+/* ══════════════════════════════════════════════════
+   FOLLOW SYSTEM
+══════════════════════════════════════════════════ */
+.follow-btn{padding:6px 14px;border-radius:20px;border:1.5px solid var(--acc);
+  background:transparent;color:var(--acc);font-size:12px;font-weight:700;cursor:pointer;transition:.2s}
+.follow-btn:hover{background:var(--acc);color:#fff}
+.follow-btn.following{background:var(--acc);color:#fff}
+.follow-btn.following:hover{background:var(--err);border-color:var(--err);color:#fff}
+.follow-btn.following:hover::after{content:'Deixar';position:absolute}
+
+/* ══════════════════════════════════════════════════
+   NOTIFICATION ROOMS
+══════════════════════════════════════════════════ */
+.notif-room-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;
+  border-radius:10px;background:rgba(108,99,255,.15);border:1px solid rgba(108,99,255,.2);
+  font-size:10px;color:var(--acc);font-weight:700;margin-left:6px}
+
+/* ══════════════════════════════════════════════════
+   CALL SCREEN
+══════════════════════════════════════════════════ */
+#callScreen{
+  position:fixed;inset:0;z-index:500;display:none;flex-direction:column;
+  background:radial-gradient(ellipse at 50% 30%,#1a1040 0%,#0c0d12 70%);
+  align-items:center;justify-content:center;
+}
+#callScreen.active{display:flex}
+.call-avatar-wrap{position:relative;margin-bottom:24px}
+.call-av{width:110px;height:110px;border-radius:50%;font-size:42px;
+  background:linear-gradient(135deg,var(--acc),var(--acc2));
+  display:flex;align-items:center;justify-content:center;overflow:hidden;
+  box-shadow:0 0 0 8px rgba(108,99,255,.2),0 0 0 16px rgba(108,99,255,.1)}
+.call-av img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.call-ring{position:absolute;inset:-8px;border-radius:50%;
+  border:2px solid rgba(108,99,255,.4);animation:callRing 1.5s ease-out infinite}
+.call-ring2{position:absolute;inset:-20px;border-radius:50%;
+  border:2px solid rgba(108,99,255,.2);animation:callRing 1.5s ease-out infinite .3s}
+@keyframes callRing{0%{transform:scale(1);opacity:.7}100%{transform:scale(1.3);opacity:0}}
+.call-name{font-family:var(--display);font-size:26px;font-weight:700;margin-bottom:8px}
+.call-status{font-size:14px;color:var(--tx2);margin-bottom:48px}
+.call-actions{display:flex;gap:20px;align-items:center}
+.call-btn{width:60px;height:60px;border-radius:50%;border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:.2s;font-size:24px}
+.call-btn:hover{transform:scale(1.1)}
+.call-btn.end{background:#ef4444}
+.call-btn.accept{background:#22c55e}
+.call-btn.mute{background:var(--s2);color:var(--tx)}
+.call-btn.video{background:var(--s2);color:var(--tx)}
+.call-btn svg{width:26px;height:26px;fill:white}
+.call-timer{font-size:32px;font-weight:700;font-family:var(--display);letter-spacing:.05em;
+  margin-bottom:8px;display:none}
+/* Video call overlay */
+#videoCallScreen{position:fixed;inset:0;z-index:600;display:none;background:#000;flex-direction:column}
+#videoCallScreen.active{display:flex}
+#remoteVideo{width:100%;height:100%;object-fit:cover;background:#111}
+#localVideo{position:absolute;bottom:80px;right:16px;width:120px;height:160px;
+  object-fit:cover;border-radius:12px;border:2px solid rgba(255,255,255,.2);background:#222}
+.video-controls{position:absolute;bottom:0;left:0;right:0;padding:20px;
+  display:flex;justify-content:center;gap:16px;
+  background:linear-gradient(transparent,rgba(0,0,0,.8))}
+.video-name-overlay{position:absolute;top:20px;left:50%;transform:translateX(-50%);
+  background:rgba(0,0,0,.5);padding:8px 20px;border-radius:20px;
+  font-size:16px;font-weight:700;backdrop-filter:blur(10px)}
+.video-timer{position:absolute;top:20px;right:20px;background:rgba(0,0,0,.5);
+  padding:4px 12px;border-radius:10px;font-size:13px;font-weight:700}
+
+/* Incoming call toast */
+.incoming-call-toast{
+  position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(100px);
+  background:var(--s1);border:1px solid var(--acc);border-radius:20px;
+  padding:16px 20px;display:flex;align-items:center;gap:14px;
+  box-shadow:0 20px 60px rgba(0,0,0,.6);z-index:450;
+  transition:transform .4s cubic-bezier(.34,1.56,.64,1);min-width:300px;
+  pointer-events:all;
+}
+.incoming-call-toast.show{transform:translateX(-50%) translateY(0)}
+.ict-info{flex:1}
+.ict-type{font-size:11px;color:var(--acc);font-weight:700;text-transform:uppercase}
+.ict-name{font-size:16px;font-weight:700}
+.ict-actions{display:flex;gap:8px}
+.ict-btn{width:44px;height:44px;border-radius:50%;border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:20px;transition:.2s}
+.ict-btn:hover{transform:scale(1.1)}
+.ict-btn.accept{background:#22c55e}
+.ict-btn.decline{background:#ef4444}
+
+/* ══════════════════════════════════════════════════
+   NEW USER NOTIFICATION
+══════════════════════════════════════════════════ */
+.new-user-toast{
+  position:fixed;bottom:80px;right:14px;
+  background:var(--s1);border:1px solid var(--acc3);border-radius:16px;
+  padding:12px 16px;display:flex;align-items:center;gap:10px;
+  box-shadow:0 12px 40px rgba(0,0,0,.5);z-index:350;
+  transform:translateX(400px);transition:transform .4s cubic-bezier(.34,1.56,.64,1);
+  max-width:280px;
+}
+.new-user-toast.show{transform:translateX(0)}
+.nut-ico{font-size:28px;flex-shrink:0}
+.nut-title{font-size:12px;font-weight:700;color:var(--acc3)}
+.nut-name{font-size:14px;font-weight:600}
+
+/* ══════════════════════════════════════════════════
+   INSTALL BUTTON (no icon, no Chrome identifier)
+══════════════════════════════════════════════════ */
+.install-fab{
+  position:fixed;bottom:80px;left:50%;transform:translateX(-50%);
+  background:linear-gradient(135deg,var(--acc),#8b5cf6);
+  color:#fff;border:none;border-radius:50px;
+  padding:14px 32px;font-family:var(--display);font-size:14px;font-weight:700;
+  cursor:pointer;box-shadow:0 8px 32px rgba(108,99,255,.5);
+  transition:.3s;z-index:200;display:none;letter-spacing:.02em;
+}
+.install-fab:hover{transform:translateX(-50%) translateY(-3px);box-shadow:0 12px 40px rgba(108,99,255,.7)}
+.install-fab.visible{display:block;animation:fadeUp .5s ease}
+@media(min-width:701px){.install-fab{bottom:20px}}
+
+/* ══════════════════════════════════════════════════
+   GROUP CHAT ROOMS
+══════════════════════════════════════════════════ */
+.grp-rooms-bar{display:flex;gap:6px;padding:8px 14px;overflow-x:auto;
+  border-bottom:1px solid var(--bd);background:var(--s1);flex-shrink:0;
+  scrollbar-width:none}
+.grp-rooms-bar::-webkit-scrollbar{display:none}
+.grp-room-chip{padding:5px 12px;border-radius:20px;border:1.5px solid var(--bd);
+  background:transparent;color:var(--tx2);font-size:12px;font-weight:600;
+  cursor:pointer;transition:.2s;white-space:nowrap;flex-shrink:0}
+.grp-room-chip:hover{border-color:var(--acc);color:var(--acc)}
+.grp-room-chip.on{background:var(--acc);border-color:var(--acc);color:#fff}
+.grp-room-chip.add-room{border-style:dashed;color:var(--tx3)}
+.grp-room-chip.add-room:hover{border-color:var(--acc3);color:var(--acc3)}
+
+/* ══════════════════════════════════════════════════
+   LINK PREVIEW IN MESSAGES
+══════════════════════════════════════════════════ */
+.link-preview{display:flex;border:1px solid var(--bd);border-radius:10px;
+  overflow:hidden;margin-top:6px;background:var(--s2);cursor:pointer;transition:.2s}
+.link-preview:hover{border-color:var(--acc)}
+.lp-accent{width:4px;flex-shrink:0;background:var(--acc)}
+.lp-body{padding:8px 10px;flex:1;min-width:0}
+.lp-url{font-size:10px;color:var(--acc);font-weight:600;text-transform:uppercase;
+  letter-spacing:.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lp-text{font-size:12px;color:var(--tx);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* ══════════════════════════════════════════════════
+   RESPONSIVE — MOBILE OVERHAUL
+══════════════════════════════════════════════════ */
+@media(max-width:700px){
+  :root{--hh:54px;--bh:54px}
+  .top-bar{padding:0 10px;gap:8px}
+  .tb-logo{font-size:16px}
+  .tb-logo-icon{width:28px;height:28px;border-radius:8px}
+  .feed-wrap{padding:8px 6px;gap:10px}
+  .post-card{border-radius:10px}
+  .compose-card{border-radius:10px;padding:10px}
+  .compose-ta{min-height:60px;font-size:13px}
+  .compose-actions{gap:6px}
+  .c-btn{padding:6px 8px;font-size:11px}
+  .btn-post{padding:7px 14px;font-size:12px}
+  .pa-btn{font-size:11px;padding:8px 2px}
+  .auth-card{padding:24px 18px;border-radius:18px}
+  .auth-logo-icon{width:52px;height:52px}
+  .auth-logo-name{font-size:22px}
+  .modal{border-radius:16px 16px 0 0;margin-top:auto;max-height:85vh;
+    position:fixed;bottom:0;left:0;right:0;max-width:100%}
+  .modal-ov{padding:0;align-items:flex-end}
+  .groups-list-panel{width:100%}
+  .grp-detail-panel{display:none!important}
+  .group-chat-panel{display:flex}
+  .groups-layout{position:relative}
+  /* Slide groups panel */
+  .groups-list-panel{position:absolute;left:0;top:0;bottom:0;z-index:5;
+    background:var(--s1);transition:.3s}
+  .groups-list-panel.grp-hidden{transform:translateX(-100%)}
+  .group-chat-panel{position:absolute;left:0;top:0;right:0;bottom:0;z-index:4}
+  .chat-msgs,.gcp-msgs{padding:10px 8px}
+  .msg-group,.grp-msg-group{max-width:90%}
+  .call-av{width:90px;height:90px}
+  .call-name{font-size:22px}
+  .call-actions{gap:16px}
+  .call-btn{width:52px;height:52px}
+  #localVideo{width:90px;height:120px;bottom:70px}
+}
+@media(max-width:380px){
+  .pa-btn span{display:none}
+  .pa-btn{gap:0}
+  .tb-logo{display:none}
+}
 </style>
 </head>
 <body>
@@ -631,7 +837,7 @@ img{display:block}
     <div class="pwa-title">Instalar FreeMode876</div>
     <div class="pwa-sub">Adicione à tela inicial para acesso rápido</div>
   </div>
-  <button class="pwa-install" id="pwaInstallBtn" onclick="installPWA()">Instalar</button>
+  <button class="pwa-install" id="pwaInstallBtn" onclick="installPWA()">Baixar App</button>
   <button class="pwa-dismiss" onclick="dismissPWA()">✕</button>
 </div>
 
@@ -797,7 +1003,13 @@ img{display:block}
       <div class="cp-status" id="chatPeerStatus">● Online</div>
     </div>
     <div class="chat-head-actions">
-      <div class="tb-btn" onclick="openShareLink()">
+      <div class="tb-btn" onclick="currentPeer&&startCall(currentPeer.id,'voice')" title="Chamada de voz">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/></svg>
+      </div>
+      <div class="tb-btn" onclick="currentPeer&&startCall(currentPeer.id,'video')" title="Videochamada">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
+      </div>
+      <div class="tb-btn" onclick="openShareLink()" title="Partilhar">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/></svg>
       </div>
     </div>
@@ -825,8 +1037,11 @@ img{display:block}
 <!-- ═══ GROUPS SCREEN ════════════════════════════════════════ -->
 <div class="screen" id="groupsScreen">
   <div class="groups-head">
-    <button class="back-btn mob-only" onclick="navTo('feed')">
+    <button class="back-btn mob-only grp-back-mob-btn" id="grpMobBack" style="display:none">
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+    </button>
+    <button class="back-btn mob-only" onclick="navTo('feed')">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
     </button>
     <h2>Grupos</h2>
     <button class="tb-btn" onclick="openCreateGroup()" title="Criar grupo">
@@ -983,8 +1198,100 @@ img{display:block}
   </div>
 </div>
 
-<script>
 
+<!-- ═══ HOLIDAY BANNER ═══════════════════════════════════════ -->
+<div class="holiday-banner" id="holidayBanner"></div>
+
+<!-- ═══ NEW USER TOAST ═══════════════════════════════════════ -->
+<div class="new-user-toast" id="newUserToast">
+  <div class="nut-ico">🎉</div>
+  <div><div class="nut-title">Novo utilizador!</div><div class="nut-name" id="nutName"></div></div>
+</div>
+
+<!-- ═══ INCOMING CALL TOAST ══════════════════════════════════ -->
+<div class="incoming-call-toast" id="incomingCallToast">
+  <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--acc),var(--acc2));display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0" id="ictAv"></div>
+  <div class="ict-info">
+    <div class="ict-type" id="ictType">Chamada de voz</div>
+    <div class="ict-name" id="ictName"></div>
+  </div>
+  <div class="ict-actions">
+    <button class="ict-btn decline" onclick="declineCall()" title="Recusar">📵</button>
+    <button class="ict-btn accept" onclick="acceptCall()" title="Aceitar">📞</button>
+  </div>
+</div>
+
+<!-- ═══ VOICE CALL SCREEN ═════════════════════════════════════ -->
+<div id="callScreen">
+  <div class="call-avatar-wrap">
+    <div class="call-ring"></div>
+    <div class="call-ring2"></div>
+    <div class="call-av" id="callAv"></div>
+  </div>
+  <div class="call-timer" id="callTimer">0:00</div>
+  <div class="call-name" id="callName"></div>
+  <div class="call-status" id="callStatus">A ligar...</div>
+  <div class="call-actions">
+    <button class="call-btn mute" id="muteBtn" onclick="toggleMute()" title="Mudo">
+      <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.91-3c-.49 0-.9.36-.98.85C16.52 14.2 14.47 16 12 16s-4.52-1.8-4.93-4.15c-.08-.49-.49-.85-.98-.85-.61 0-1.09.54-1 1.14.49 3 2.89 5.35 5.91 5.78V20c0 .55.45 1 1 1s1-.45 1-1v-2.08c3.02-.43 5.42-2.78 5.91-5.78.1-.6-.39-1.14-1-1.14z"/></svg>
+    </button>
+    <button class="call-btn end" onclick="endCall()" title="Terminar">
+      <svg viewBox="0 0 24 24"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/></svg>
+    </button>
+    <button class="call-btn video" id="vidToggleBtn" onclick="upgradeToVideo()" title="Vídeo">
+      <svg viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- ═══ VIDEO CALL SCREEN ═════════════════════════════════════ -->
+<div id="videoCallScreen">
+  <video id="remoteVideo" autoplay playsinline></video>
+  <video id="localVideo" autoplay playsinline muted></video>
+  <div class="video-name-overlay" id="videoCallName"></div>
+  <div class="video-timer" id="videoTimer">0:00</div>
+  <div class="video-controls">
+    <button class="call-btn mute" id="vidMuteBtn" onclick="toggleMute()" title="Mudo">
+      <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.91-3c-.49 0-.9.36-.98.85C16.52 14.2 14.47 16 12 16s-4.52-1.8-4.93-4.15c-.08-.49-.49-.85-.98-.85-.61 0-1.09.54-1 1.14.49 3 2.89 5.35 5.91 5.78V20c0 .55.45 1 1 1s1-.45 1-1v-2.08c3.02-.43 5.42-2.78 5.91-5.78.1-.6-.39-1.14-1-1.14z"/></svg>
+    </button>
+    <button class="call-btn end" onclick="endVideoCall()" title="Terminar">
+      <svg viewBox="0 0 24 24"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/></svg>
+    </button>
+    <button class="call-btn video" onclick="toggleCamera()" title="Câmera">
+      <svg viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
+    </button>
+    <button class="call-btn mute" onclick="switchCamera()" title="Trocar câmera" style="font-size:20px">🔄</button>
+  </div>
+</div>
+
+<!-- ═══ INSTALL FAB (sem ícone, sem "Chrome") ══════════════════ -->
+<button class="install-fab" id="installFab" onclick="installPWA()">
+  Baixar para celular
+</button>
+
+<!-- ═══ GROUP ROOM CREATE MODAL ═══════════════════════════════ -->
+<div class="modal-ov" id="createRoomOv">
+  <div class="modal" style="max-width:360px">
+    <div class="modal-head"><h3>➕ Nova Sala do Grupo</h3><button class="modal-close" onclick="closeModal('createRoomOv')">✕</button></div>
+    <div class="modal-body">
+      <div class="fg"><label>Nome da sala</label><input type="text" id="roomNameIn" placeholder="Ex: geral, anúncios, off-topic" maxlength="30"></div>
+      <div class="fg">
+        <label>Tipo</label>
+        <select id="roomTypeIn" style="width:100%;padding:10px;background:var(--s2);border:1.5px solid var(--bd);border-radius:var(--r2);color:var(--tx);font-size:13px;outline:none">
+          <option value="chat">💬 Chat</option>
+          <option value="announce">📢 Anúncios (só admins postam)</option>
+          <option value="media">🖼 Média</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="mf-btn ghost" onclick="closeModal('createRoomOv')">Cancelar</button>
+      <button class="mf-btn prim" onclick="createGroupRoom()">Criar Sala</button>
+    </div>
+  </div>
+</div>
+
+<script>
 // ════════════════════════════════════════════════════════════════
 // CONSTANTS & INITIAL DATA
 // ════════════════════════════════════════════════════════════════
@@ -2109,11 +2416,7 @@ function initPWA(){
     navigator.serviceWorker.register('./sw.js').catch(()=>{});
   }
 }
-window.addEventListener('beforeinstallprompt',e=>{
-  e.preventDefault();deferredInstall=e;
-  if(!localStorage.getItem('pwa_dismissed'))
-    setTimeout(()=>document.getElementById('pwaBanner').classList.add('show'),3000);
-});
+// beforeinstallprompt handled in overrides section above
 window.addEventListener('appinstalled',()=>{document.getElementById('pwaBanner').classList.remove('show');});
 async function installPWA(){
   if(!deferredInstall)return;
@@ -2156,6 +2459,643 @@ function seedData(){
   save();
 }
 
+
+
+// ════════════════════════════════════════════════════════════════
+// FOLLOW SYSTEM
+// ════════════════════════════════════════════════════════════════
+function followUser(uid2){
+  if(!CU||uid2===CU.id)return;
+  if(!CU.following_ids)CU.following_ids=[];
+  const target=_users.find(u=>u.id===uid2);if(!target)return;
+  if(!target.followers_ids)target.followers_ids=[];
+  const idx=CU.following_ids.indexOf(uid2);
+  if(idx>-1){
+    CU.following_ids.splice(idx,1);
+    target.followers_ids=target.followers_ids.filter(x=>x!==CU.id);
+    target.followers=Math.max(0,(target.followers||0)-1);
+  } else {
+    CU.following_ids.push(uid2);
+    target.followers_ids.push(CU.id);
+    target.followers=(target.followers||0)+1;
+    addNotif('👥',CU.name+' começou a seguir você','');
+  }
+  CU.following=(CU.following_ids||[]).length;
+  updUser(target);save();
+}
+function isFollowing(uid2){return (CU.following_ids||[]).includes(uid2);}
+
+// ════════════════════════════════════════════════════════════════
+// LINK DETECTION & RENDERING
+// ════════════════════════════════════════════════════════════════
+const URL_REGEX=/https?:\/\/[^\s<>"']+/g;
+function renderTextWithLinks(txt){
+  if(!txt)return'';
+  const escaped=esc(txt);
+  return escaped.replace(/https?:\/\/[^\s&lt;&gt;"']+/g,url=>{
+    const display=url.length>50?url.substring(0,50)+'…':url;
+    return `<a href="${url}" target="_blank" rel="noopener" onclick="event.stopPropagation()" style="color:var(--acc);text-decoration:none;border-bottom:1px solid rgba(108,99,255,.4)" onmouseover="this.style.opacity=.8" onmouseout="this.style.opacity=1">${display}</a>`;
+  });
+}
+function buildLinkPreview(txt,onclick_url){
+  if(!txt)return'';
+  const match=txt.match(/https?:\/\/[^\s]+/);
+  if(!match)return'';
+  const url=match[0];
+  try{
+    const u=new URL(url);
+    return`<div class="link-preview" onclick="window.open('${url}','_blank')">
+      <div class="lp-accent"></div>
+      <div class="lp-body">
+        <div class="lp-url">${u.hostname}</div>
+        <div class="lp-text">${url.length>60?url.substring(0,60)+'…':url}</div>
+      </div>
+      <div style="padding:8px;color:var(--acc);font-size:18px">↗</div>
+    </div>`;
+  }catch{return'';}
+}
+
+// ════════════════════════════════════════════════════════════════
+// SEASONAL / HOLIDAY SYSTEM (Moçambique)
+// ════════════════════════════════════════════════════════════════
+const MZ_HOLIDAYS=[
+  {month:1,day:1,name:'🎊 Ano Novo – Feliz 2025, Moçambique!',cls:'hb-independence'},
+  {month:2,day:3,name:'🦸 Dia dos Heróis Moçambicanos – Honrando os que lutaram!',cls:'hb-independence'},
+  {month:4,day:7,name:'👩‍👧 Dia da Mulher Moçambicana – Força e beleza!',cls:'hb-women'},
+  {month:5,day:1,name:'⚒️ Dia do Trabalhador – Parabéns a todos os trabalhadores!',cls:'hb-workers'},
+  {month:6,day:25,name:'🇲🇿 Dia da Independência – Viva Moçambique! 25 de Junho',cls:'hb-independence'},
+  {month:9,day:7,name:'🕊️ Dia da Vitória – Celebrando a paz em Moçambique!',cls:'hb-independence'},
+  {month:9,day:25,name:'💚 Dia das Forças Armadas – Obrigado aos nossos defensores!',cls:'hb-independence'},
+  {month:10,day:4,name:'☮️ Dia da Paz – Moçambique unido pela paz!',cls:'hb-independence'},
+  {month:12,day:25,name:'🎄 Feliz Natal! Que a paz e alegria iluminem Moçambique!',cls:'hb-christmas'},
+];
+function checkHoliday(){
+  const now=new Date();
+  const m=now.getMonth()+1,d=now.getDate();
+  // Christmas special: show snow Dec 20-31
+  if(m===12&&d>=20){
+    document.body.classList.add('christmas-theme');
+    startSnow();
+  }
+  const h=MZ_HOLIDAYS.find(x=>x.month===m&&x.day===d);
+  if(h){
+    const banner=document.getElementById('holidayBanner');
+    banner.textContent=h.name;
+    banner.className='holiday-banner '+h.cls+' show';
+    banner.style.top='var(--hh)';
+    // Adjust content margin
+    document.querySelector('.app-body').style.paddingTop='36px';
+    setTimeout(()=>{banner.classList.remove('show');},8000);
+  }
+}
+let snowInterval=null;
+function startSnow(){
+  if(snowInterval)return;
+  const symbols=['❄','❅','❆','✦','✧','•'];
+  snowInterval=setInterval(()=>{
+    const flake=document.createElement('div');
+    flake.className='snowflake';
+    flake.textContent=symbols[Math.floor(Math.random()*symbols.length)];
+    flake.style.left=Math.random()*100+'vw';
+    flake.style.fontSize=(0.8+Math.random()*1.4)+'em';
+    flake.style.animationDuration=(4+Math.random()*6)+'s';
+    flake.style.animationDelay=Math.random()*2+'s';
+    flake.style.opacity=0.4+Math.random()*0.5;
+    document.body.appendChild(flake);
+    setTimeout(()=>flake.remove(),12000);
+  },300);
+}
+
+// ════════════════════════════════════════════════════════════════
+// NEW USER NOTIFICATIONS
+// ════════════════════════════════════════════════════════════════
+function showNewUserToast(name){
+  document.getElementById('nutName').textContent=name;
+  const t=document.getElementById('newUserToast');
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),4500);
+}
+// Track registered users count to detect new ones
+function checkNewUsers(){
+  const known=S.g('fm_known_count')||0;
+  const current=_users.filter(u=>!['bot1','bot2','bot3'].includes(u.id)).length;
+  if(current>known&&known>0){
+    const newest=_users.filter(u=>!['bot1','bot2','bot3'].includes(u.id)).slice(-1)[0];
+    if(newest&&newest.id!==CU.id) showNewUserToast(newest.name+' entrou no FreeMode876!');
+  }
+  S.s('fm_known_count',current);
+}
+
+// ════════════════════════════════════════════════════════════════
+// VOICE & VIDEO CALLS (WebRTC simulated with UI)
+// ════════════════════════════════════════════════════════════════
+let callActive=false, callPeer=null, callType='voice';
+let callStartTime=null, callTimerInterval=null;
+let localStream=null, peerConnection=null;
+let isMuted=false, cameraOn=true;
+
+function startCall(uid2,type='voice'){
+  const u=_users.find(x=>x.id===uid2);if(!u)return;
+  callPeer=u;callType=type;callActive=true;
+  if(type==='voice') _startVoiceCallUI(u);
+  else _startVideoCallUI(u);
+  // Simulate call connecting after 2s
+  setTimeout(()=>{
+    if(!callActive)return;
+    document.getElementById('callStatus').textContent='● Em chamada';
+    const cs=document.getElementById('callStatus');
+    if(cs)cs.style.color='var(--ok)';
+    document.getElementById('callTimer').style.display='block';
+    callStartTime=Date.now();
+    callTimerInterval=setInterval(updateCallTimer,1000);
+  },2000+Math.random()*1500);
+}
+function _startVoiceCallUI(u){
+  const av=document.getElementById('callAv');
+  if(u.avatar) av.innerHTML=`<img src="${u.avatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+  else av.textContent=ini(u.name);
+  document.getElementById('callName').textContent=u.name;
+  document.getElementById('callStatus').textContent='A ligar...';
+  document.getElementById('callStatus').style.color='';
+  document.getElementById('callTimer').style.display='none';
+  document.getElementById('callTimer').textContent='0:00';
+  document.getElementById('callScreen').classList.add('active');
+}
+function _startVideoCallUI(u){
+  document.getElementById('videoCallName').textContent=u.name;
+  document.getElementById('videoTimer').textContent='0:00';
+  document.getElementById('videoCallScreen').classList.add('active');
+  // Request camera
+  navigator.mediaDevices?.getUserMedia({video:true,audio:true}).then(stream=>{
+    localStream=stream;
+    const lv=document.getElementById('localVideo');
+    lv.srcObject=stream;
+    // Simulate remote video with a colored canvas
+    const canvas=document.createElement('canvas');
+    canvas.width=640;canvas.height=480;
+    const ctx2=canvas.getContext('2d');
+    setInterval(()=>{
+      if(!callActive)return;
+      const t=Date.now()/1000;
+      ctx2.fillStyle=`hsl(${(t*20)%360},40%,15%)`;
+      ctx2.fillRect(0,0,640,480);
+      ctx2.fillStyle='rgba(255,255,255,.05)';
+      for(let i=0;i<5;i++){
+        ctx2.beginPath();
+        ctx2.arc(320+Math.sin(t+i)*80,240+Math.cos(t*0.7+i)*60,30+i*10,0,Math.PI*2);
+        ctx2.fill();
+      }
+    },50);
+    const stream2=canvas.captureStream(30);
+    document.getElementById('remoteVideo').srcObject=stream2;
+  }).catch(()=>{
+    // No camera permission — simulate anyway
+    document.getElementById('localVideo').style.background='#333';
+  });
+  callStartTime=Date.now();
+  callTimerInterval=setInterval(updateCallTimer,1000);
+}
+function updateCallTimer(){
+  if(!callStartTime)return;
+  const s=Math.floor((Date.now()-callStartTime)/1000);
+  const mm=Math.floor(s/60),ss=s%60;
+  const str=mm+':'+(ss<10?'0':'')+ss;
+  const t1=document.getElementById('callTimer');
+  const t2=document.getElementById('videoTimer');
+  if(t1)t1.textContent=str;
+  if(t2)t2.textContent=str;
+}
+function endCall(){
+  callActive=false;callPeer=null;
+  if(callTimerInterval)clearInterval(callTimerInterval);
+  callTimerInterval=null;callStartTime=null;
+  document.getElementById('callScreen').classList.remove('active');
+  isMuted=false;
+}
+function endVideoCall(){
+  callActive=false;callPeer=null;
+  if(callTimerInterval)clearInterval(callTimerInterval);
+  callTimerInterval=null;callStartTime=null;
+  if(localStream){localStream.getTracks().forEach(t=>t.stop());localStream=null;}
+  document.getElementById('videoCallScreen').classList.remove('active');
+  document.getElementById('localVideo').srcObject=null;
+  document.getElementById('remoteVideo').srcObject=null;
+  isMuted=false;
+}
+function toggleMute(){
+  isMuted=!isMuted;
+  if(localStream) localStream.getAudioTracks().forEach(t=>t.enabled=!isMuted);
+  const btns=[document.getElementById('muteBtn'),document.getElementById('vidMuteBtn')];
+  btns.forEach(b=>{if(b)b.style.background=isMuted?'#ef4444':'var(--s2)';});
+  pushNotif(isMuted?'🔇':'🔊',isMuted?'Microfone desligado':'Microfone ligado','',true);
+}
+function upgradeToVideo(){
+  endCall();
+  if(callPeer) startCall(callPeer.id,'video');
+}
+function toggleCamera(){
+  cameraOn=!cameraOn;
+  if(localStream) localStream.getVideoTracks().forEach(t=>t.enabled=cameraOn);
+}
+function switchCamera(){
+  pushNotif('🔄','Câmera alternada','',true);
+}
+
+// Incoming call simulation
+let _incomingCallTimer=null;
+function simulateIncomingCall(){
+  const callers=_users.filter(u=>u.id!==CU.id&&!['bot1','bot2','bot3'].includes(u.id));
+  const bots=['bot2','bot3'];
+  const all=[...callers,...bots.map(id=>_users.find(u=>u.id===id)).filter(Boolean)];
+  if(!all.length)return;
+  const caller=all[Math.floor(Math.random()*all.length)];
+  const isVideo=Math.random()>.6;
+  document.getElementById('ictAv').textContent=ini(caller.name);
+  document.getElementById('ictName').textContent=caller.name;
+  document.getElementById('ictType').textContent=isVideo?'Vídeo chamada':'Chamada de voz';
+  callPeer=caller;callType=isVideo?'video':'voice';
+  const t=document.getElementById('incomingCallToast');
+  t.classList.add('show');
+  _incomingCallTimer=setTimeout(()=>t.classList.remove('show'),15000);
+}
+function acceptCall(){
+  document.getElementById('incomingCallToast').classList.remove('show');
+  if(_incomingCallTimer)clearTimeout(_incomingCallTimer);
+  if(callPeer) startCall(callPeer.id,callType);
+}
+function declineCall(){
+  document.getElementById('incomingCallToast').classList.remove('show');
+  if(_incomingCallTimer)clearTimeout(_incomingCallTimer);
+  callPeer=null;
+  pushNotif('📵','Chamada recusada','',true);
+}
+
+// ════════════════════════════════════════════════════════════════
+// GROUP ROOMS (sub-rooms inside groups)
+// ════════════════════════════════════════════════════════════════
+let currentGroupRoom='geral';
+const DEFAULT_GROUP_ROOMS=[
+  {id:'geral',name:'geral',type:'chat',icon:'💬'},
+  {id:'anuncios',name:'anúncios',type:'announce',icon:'📢'},
+];
+
+function createGroupRoom(){
+  if(!currentGroup)return;
+  const name=document.getElementById('roomNameIn').value.trim().replace(/\s+/g,'-').toLowerCase();
+  const type=document.getElementById('roomTypeIn').value;
+  if(!name){alert('Digite um nome para a sala');return;}
+  if(!currentGroup.rooms)currentGroup.rooms=[...DEFAULT_GROUP_ROOMS];
+  if(currentGroup.rooms.find(r=>r.id===name)){alert('Já existe uma sala com esse nome');return;}
+  const icon=type==='announce'?'📢':type==='media'?'🖼':'💬';
+  currentGroup.rooms.push({id:name,name,type,icon});
+  const gi=_groups.findIndex(g=>g.id===currentGroup.id);
+  if(gi>-1)_groups[gi]=currentGroup;
+  save();
+  closeModal('createRoomOv');
+  document.getElementById('roomNameIn').value='';
+  renderGroupChatPanel();
+  pushNotif('✅','Sala criada!','#'+name);
+}
+function switchGroupRoom(roomId){
+  currentGroupRoom=roomId;
+  renderGroupChatPanel();
+  if(window.innerWidth<=700) openGroupChatMobile();
+}
+
+// ════════════════════════════════════════════════════════════════
+// PUSH NOTIFICATION SYSTEM (enhanced)
+// ════════════════════════════════════════════════════════════════
+function requestPushPermission(){
+  if('Notification' in window && Notification.permission==='default'){
+    Notification.requestPermission().then(perm=>{
+      if(perm==='granted') pushNotif('🔔','Notificações ativadas!','Você receberá alertas do FreeMode876');
+    });
+  }
+}
+function sendSystemPush(title,body,tag='fm876'){
+  if('Notification' in window && Notification.permission==='granted'){
+    new Notification(title,{body,icon:'./icon-192.png',tag,renotify:true,badge:'./icon-192.png'});
+  }
+}
+
+// ════════════════════════════════════════════════════════════════
+// PWA INSTALL — clean button (no Chrome identifier)
+// ════════════════════════════════════════════════════════════════
+function updateInstallFab(){
+  const fab=document.getElementById('installFab');
+  if(!fab)return;
+  // Show if not installed and prompt available
+  if(deferredInstall && !window.matchMedia('(display-mode: standalone)').matches){
+    fab.classList.add('visible');
+  } else {
+    fab.classList.remove('visible');
+    if(fab) fab.style.display='none';
+  }
+}
+
+// ════════════════════════════════════════════════════════════════
+// OVERRIDES — enhance existing functions
+// ════════════════════════════════════════════════════════════════
+
+// Override openProfile to add follow button
+const _origOpenProfile=openProfile;
+function openProfile(uid2){
+  if(!uid2||uid2==='undefined')return;
+  load();
+  const u=_users.find(x=>x.id===uid2)||{id:uid2,name:'Utilizador',isAnon:true,handle:'',bio:'',followers:0,following:0,avatar:null,joined:''};
+  const isMe=uid2===CU.id;
+  const avBig=document.getElementById('profileAvBig');
+  renderAv(avBig,u,72,26);
+  const following=isFollowing(uid2);
+  document.getElementById('profileModalBody').innerHTML=`
+    <div class="profile-banner-inner">
+      <div class="pm-name">${esc(u.name)}</div>
+      <div class="pm-handle">${esc(u.handle||'')}${u.isAnon?'<span style="font-size:11px;color:var(--tx3);margin-left:6px">Anônimo</span>':''}</div>
+      ${u.bio?`<div class="pm-bio">${esc(u.bio)}</div>`:''}
+      <div class="pm-stats">
+        <div class="pm-stat"><div class="pm-stat-n">${_posts.filter(p=>p.uid===u.id).length}</div><div class="pm-stat-l">Posts</div></div>
+        <div class="pm-stat"><div class="pm-stat-n">${(u.followers_ids||[]).length||(u.followers||0)}</div><div class="pm-stat-l">Seguidores</div></div>
+        <div class="pm-stat"><div class="pm-stat-n">${(u.following_ids||[]).length||(u.following||0)}</div><div class="pm-stat-l">Seguindo</div></div>
+      </div>
+      ${u.joined?`<div style="font-size:12px;color:var(--tx2);margin-top:8px">📅 Desde ${u.joined}</div>`:''}
+    </div>
+    <div class="pm-actions">
+      ${isMe
+        ?`<button class="pm-btn prim" onclick="closeModal('profileModalOv');openEditProfile()">✏️ Editar Perfil</button>`
+        :`<button class="pm-btn prim" onclick="closeModal('profileModalOv');openPrivate('${u.id}')">💬 Mensagem</button>
+          <button class="follow-btn ${following?'following':''}" onclick="followUser('${u.id}');openProfile('${u.id}')" style="flex:none;position:relative">
+            ${following?'✓ Seguindo':'+ Seguir'}
+          </button>`
+      }
+    </div>
+    ${!isMe?`<div style="display:flex;gap:8px;margin-top:10px;padding:0 18px 14px">
+      <button class="pm-btn ghost" style="font-size:12px" onclick="startCall('${u.id}','voice');closeModal('profileModalOv')">📞 Ligar</button>
+      <button class="pm-btn ghost" style="font-size:12px" onclick="startCall('${u.id}','video');closeModal('profileModalOv')">📹 Vídeo</button>
+      <button class="pm-btn ghost" style="font-size:12px" onclick="addToGroup_prompt('${u.id}')">👥 Add Grupo</button>
+    </div>`:''}`;
+  openModal('profileModalOv');
+}
+
+// Override buildPostCard to render links and add call button
+const _origBuildPostCard=buildPostCard;
+function buildPostCard(p){
+  const u=getUser(p.uid);
+  const liked=p.likes.includes(CU.id);
+  const mine=p.uid===CU.id;
+  const hasLink=p.txt&&/https?:\/\//.test(p.txt);
+  const linkPreview=hasLink?buildLinkPreview(p.txt):'';
+  return`<div class="post-card" id="pc_${p.id}">
+    <div class="post-head">
+      ${mkAv(u,38,13)}
+      <div class="post-author-info" onclick="openProfile('${p.uid}')">
+        <div class="pa-name">${esc(p.uname||u.name)}</div>
+        <div class="pa-time">${fmtDate(p.ts)} · ${ROOMS.find(r=>r.id===p.room)?.icon||''}${ROOMS.find(r=>r.id===p.room)?.name||p.room}</div>
+      </div>
+      <button class="post-menu-btn" onclick="showPostMenu(event,'${p.id}','${mine}')">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+      </button>
+    </div>
+    ${p.txt?`<div class="post-txt">${renderTextWithLinks(p.txt)}</div>`:''}
+    ${linkPreview}
+    ${p.img?`<img class="post-img" src="${p.img}" onclick="openLightbox('${p.img}')" loading="lazy">`:''}
+    <div class="post-stats">
+      <span>${p.likes.length>0?'❤️ '+p.likes.length:''}</span>
+      <span>${p.comments.length>0?p.comments.length+' comentário'+(p.comments.length>1?'s':''):''}</span>
+    </div>
+    <div class="post-actions">
+      <button class="pa-btn ${liked?'liked':''}" onclick="toggleLike('${p.id}')">
+        <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+        <span>Adorar</span>
+      </button>
+      <button class="pa-btn" onclick="toggleComments('${p.id}')">
+        <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/></svg>
+        <span>Comentar</span>
+      </button>
+      <button class="pa-btn" onclick="openShare('${esc(p.txt||'Post')}','')">
+        <svg viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/></svg>
+        <span>Partilhar</span>
+      </button>
+      ${!mine?`<button class="pa-btn" onclick="openPrivate('${p.uid}')">
+        <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+        <span>Msg</span>
+      </button>`:''}
+    </div>
+    <div class="comments-wrap" id="cw_${p.id}">
+      <div class="cmt-list" id="cl_${p.id}">
+        ${(p.comments||[]).map(c=>{
+          const cu=getUser(c.uid);
+          return`<div class="cmt">
+            ${mkAv(cu,28,10)}
+            <div><div class="cmt-bubble"><div class="cmt-name" onclick="openProfile('${c.uid}')">${esc(c.uname||cu.name)}</div><div class="cmt-txt">${renderTextWithLinks(c.txt)}</div></div>
+            <div class="cmt-time">${fmtDate(c.ts)}</div></div>
+          </div>`;
+        }).join('')}
+      </div>
+      <div class="cmt-input-row">
+        ${mkAv(CU,28,10)}
+        <input type="text" class="cmt-in" id="ci_${p.id}" placeholder="Escreva um comentário..." onkeydown="if(event.key==='Enter')addComment('${p.id}')">
+        <button class="cmt-send" onclick="addComment('${p.id}')"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg></button>
+      </div>
+    </div>
+  </div>`;
+}
+
+// Override renderGroupChatPanel to add rooms bar
+const _origRenderGroupChatPanel=renderGroupChatPanel;
+function renderGroupChatPanel(){
+  const g=currentGroup;if(!g)return;
+  const myRole=g.members.find(m=>m.id===CU.id)?.role||'member';
+  const isAdmin=myRole==='admin';
+  const rooms=g.rooms||DEFAULT_GROUP_ROOMS;
+  if(!currentGroupRoom||!rooms.find(r=>r.id===currentGroupRoom)) currentGroupRoom=rooms[0]?.id||'geral';
+  const cr=rooms.find(r=>r.id===currentGroupRoom)||rooms[0];
+  const isAnnounce=cr?.type==='announce';
+  const avHtml=g.avatar?`<img src="${g.avatar}" style="width:38px;height:38px;object-fit:cover;border-radius:10px">`:`<div class="av" style="width:38px;height:38px;border-radius:10px;font-size:16px">${g.icon||'👥'}</div>`;
+  
+  // Filter messages by room
+  const allMsgs=g.messages||[];
+  const msgs=allMsgs.filter(m=>(m.room||'geral')===currentGroupRoom);
+  
+  const msgsHtml=msgs.length?msgs.map(m=>{
+    const u=getUser(m.uid);const mine=m.uid===CU.id;
+    const hasLink=m.txt&&/https?:\/\//.test(m.txt);
+    return`<div class="grp-msg-group ${mine?'mine':''}" style="max-width:78%">
+      ${!mine?mkAv(u,28,10,'align-self:flex-end'):''}
+      <div class="msg-content">
+        ${!mine?`<div class="grp-sender">${esc(u.name)}</div>`:''}
+        ${m.img?`<div class="msg-img-wrap"><img src="${m.img}" onclick="openLightbox('${m.img}')"></div>`:''}
+        ${m.txt?`<div class="msg-bubble">${renderTextWithLinks(m.txt)}</div>`:''}
+        ${hasLink&&!mine?buildLinkPreview(m.txt):''}
+        <div class="msg-time">${fmtTime(m.ts)}</div>
+      </div>
+    </div>`;
+  }).join(''):`<div class="empty-state"><div class="empty-icon">${cr?.icon||'💬'}</div><div class="empty-title">#${cr?.name||'geral'}</div><div class="empty-sub">Nenhuma mensagem ainda. Seja o primeiro!</div></div>`;
+
+  document.getElementById('groupChatPanel').innerHTML=`
+    <div class="gcp-head">
+      ${avHtml}
+      <div class="gcp-info">
+        <div class="gcp-name">${esc(g.name)}</div>
+        <div class="gcp-sub">#${cr?.name||'geral'} · ${g.members.length} membros</div>
+      </div>
+      <div style="display:flex;gap:6px">
+        ${isAdmin?`<div class="tb-btn" onclick="openManageMembers()" title="Membros"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></div>`:''}
+        <div class="tb-btn" onclick="openShare('${esc(g.name)}','')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/></svg></div>
+        <div class="tb-btn" onclick="leaveGroup('${g.id}')" title="Sair"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg></div>
+      </div>
+    </div>
+    <div class="grp-rooms-bar">
+      ${rooms.map(r=>`<button class="grp-room-chip ${r.id===currentGroupRoom?'on':''}" onclick="switchGroupRoom('${r.id}')">${r.icon} #${r.name}</button>`).join('')}
+      ${isAdmin?`<button class="grp-room-chip add-room" onclick="openModal('createRoomOv')">+ Sala</button>`:''}
+    </div>
+    <div class="gcp-msgs" id="grpMsgs">${msgsHtml}</div>
+    <div class="chat-input-bar">
+      <div class="chat-img-preview-bar" id="grpImgPrev" style="display:none">
+        <img id="grpPrevImg" src="" style="height:48px;width:48px;object-fit:cover;border-radius:6px">
+        <span style="font-size:12px;color:var(--tx2);flex:1">Imagem pronta</span>
+        <button onclick="removeGrpImg()" style="background:none;border:none;color:var(--err);cursor:pointer;font-size:18px">✕</button>
+      </div>
+      ${isAnnounce&&!isAdmin?
+        `<div style="padding:12px 14px;text-align:center;color:var(--tx2);font-size:13px">📢 Apenas administradores podem enviar mensagens aqui</div>`:
+        `<div class="chat-inp-row">
+          <label class="ci-btn" style="cursor:pointer">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+            <input type="file" accept="image/*" style="display:none" onchange="previewGrpImg(event)">
+          </label>
+          <textarea class="chat-ta" id="grpTA" placeholder="Mensagem em #${cr?.name||'geral'}..." rows="1" oninput="autoResize(this)"></textarea>
+          <button class="ci-btn ci-send" onclick="sendGroupMsg()">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+          </button>
+        </div>`
+      }
+    </div>`;
+  scrollBottom('grpMsgs');
+  document.getElementById('grpTA')?.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendGroupMsg();}});
+}
+
+// Override sendGroupMsg to include room
+const _origSendGroupMsg=sendGroupMsg;
+function sendGroupMsg(){
+  const ta=document.getElementById('grpTA');if(!ta)return;
+  const txt=ta.value.trim();if(!txt&&!grpImgData)return;
+  const rooms=currentGroup.rooms||DEFAULT_GROUP_ROOMS;
+  const cr=rooms.find(r=>r.id===currentGroupRoom);
+  if(cr?.type==='announce'){const myRole=currentGroup.members.find(m=>m.id===CU.id)?.role;if(myRole!=='admin')return;}
+  if(!currentGroup.messages)currentGroup.messages=[];
+  currentGroup.messages.push({id:uid(),uid:CU.id,txt,img:grpImgData,ts:Date.now(),room:currentGroupRoom});
+  const gi=_groups.findIndex(g=>g.id===currentGroup.id);
+  if(gi>-1)_groups[gi]=currentGroup;
+  save();ta.value='';ta.style.height='auto';removeGrpImg();
+  renderGroupChatPanel();
+  currentGroup.members.filter(m=>m.id!==CU.id).forEach(()=>addNotif('👥',`${CU.name} em #${currentGroupRoom}`,txt.substring(0,40)||(grpImgData?'📷':''),false));
+}
+
+// Override enterApp to add new init calls
+const _origEnterApp=enterApp;
+function enterApp(){
+  load();
+  showScreen('appScreen');
+  currentRoom='geral';currentPeer=null;currentGroup=null;
+  renderAv(document.getElementById('compAv'),CU,38,14);
+  seedData();
+  document.querySelectorAll('.lstab').forEach(t=>t.classList.remove('on'));
+  const firstLsTab=document.getElementById('lsRoomsTab');
+  if(firstLsTab)firstLsTab.classList.add('on');
+  lsTab='rooms';
+  switchLSTab('rooms',null);
+  document.getElementById('compRoomLabel').textContent='Geral';
+  renderPosts();renderOnline();renderRightGroups();updateNotifBadge();
+  initPWA();schedulePushes();
+  // New features init
+  checkHoliday();
+  checkNewUsers();
+  requestPushPermission();
+  updateInstallFab();
+  // Simulate incoming calls occasionally
+  setTimeout(()=>{
+    if(Math.random()>.6) simulateIncomingCall();
+  },30000+Math.random()*60000);
+}
+
+// ── Mobile: groups panel back button
+function openGroupsMobileBack(){
+  document.querySelector('.groups-list-panel')?.classList.remove('grp-hidden');
+  currentGroup=null;
+  const backBtn=document.getElementById('grpMobBack');
+  if(backBtn) backBtn.style.display='none';
+}
+function openGroupChatMobile(){
+  document.querySelector('.groups-list-panel')?.classList.add('grp-hidden');
+  const backBtn=document.getElementById('grpMobBack');
+  if(backBtn) backBtn.style.display='flex';
+}
+
+// Override openGroupChat to handle mobile
+const _origOpenGroupChat=openGroupChat;
+function openGroupChat(gid){
+  load();
+  const g=_groups.find(x=>x.id===gid);
+  if(!g)return;
+  currentGroup=g;
+  currentGroupRoom=(g.rooms||DEFAULT_GROUP_ROOMS)[0]?.id||'geral';
+  renderGroupsList();
+  renderGroupChatPanel();
+  renderGroupDetailPanel();
+  const dp=document.getElementById('grpDetailPanel');
+  dp.style.display='flex';dp.style.flexDirection='column';dp.style.overflow='hidden';
+  // Mobile: hide list, show chat
+  if(window.innerWidth<=700) openGroupChatMobile();
+}
+
+// ── Private chat also renders links
+const _origRenderChatMsgs=renderChatMsgs;
+function renderChatMsgs(){
+  if(!currentPeer||!CU)return;
+  load();
+  const key=convKey(CU.id,currentPeer.id);
+  const msgs=(_convs[key]||[]);
+  const c=document.getElementById('chatMsgs');
+  if(!msgs.length){
+    c.innerHTML=`<div class="empty-state"><div class="empty-icon">🔒</div>
+      <div class="empty-title">Conversa privada com ${esc(currentPeer.name)}</div>
+      <div class="empty-sub">Suas mensagens são visíveis apenas para vocês dois</div></div>`;
+    return;
+  }
+  c.innerHTML=msgs.map(m=>{
+    const mine=m.from===CU.id;
+    const u=mine?CU:currentPeer;
+    const hasLink=m.txt&&/https?:\/\//.test(m.txt);
+    return`<div class="msg-group ${mine?'mine':''}" style="max-width:78%">
+      ${!mine?mkAv(u,28,10,'align-self:flex-end'):''}
+      <div class="msg-content">
+        ${m.img?`<div class="msg-img-wrap"><img src="${m.img}" onclick="openLightbox('${m.img}')"></div>`:''}
+        ${m.txt?`<div class="msg-bubble">${renderTextWithLinks(m.txt)}</div>`:''}
+        ${hasLink&&!mine?buildLinkPreview(m.txt):''}
+        <div class="msg-time">${fmtTime(m.ts)}</div>
+      </div>
+    </div>`;
+  }).join('');
+  scrollBottom('chatMsgs');
+}
+
+// ── Mobile groups back button in header
+// Inject back button into gcp-head if on mobile
+window.addEventListener('resize',()=>{
+  if(window.innerWidth>700 && currentGroup){
+    document.querySelector('.groups-list-panel')?.classList.remove('grp-hidden');
+  }
+  updateInstallFab();
+});
+
+// Update beforeinstallprompt handler
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault();
+  deferredInstall=e;
+  updateInstallFab();
+  if(!localStorage.getItem('pwa_dismissed'))
+    setTimeout(()=>document.getElementById('pwaBanner').classList.add('show'),5000);
+});
+
 // ════════════════════════════════════════════════════════════════
 // BOOT — runs after full DOM parse
 // ════════════════════════════════════════════════════════════════
@@ -2174,6 +3114,12 @@ document.addEventListener('DOMContentLoaded', function() {
     if(u) { CU = u; enterApp(); return; }
   }
   // No session → stay on auth screen (already active by default)
+  // Holiday check on auth screen too
+  checkHoliday();
+  // Back button for mobile groups
+  document.addEventListener('click',e=>{
+    if(e.target.closest('.grp-back-mob-btn')) openGroupsMobileBack();
+  });
 });
 </script>
 </body>
