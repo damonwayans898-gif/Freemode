@@ -966,6 +966,153 @@ body.christmas-theme .top-bar{border-bottom-color:#c41e3a33!important}
 .npb-text{flex:1;font-size:12px;color:var(--tx)}
 .npb-btn{padding:6px 12px;background:var(--warn);border:none;border-radius:7px;color:#fff;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap}
 
+
+/* ══ SPLASH SCREEN ══ */
+#splashScreen{
+  position:fixed;inset:0;z-index:9999;
+  background:radial-gradient(ellipse 120% 100% at 50% 0%, rgba(108,99,255,.35) 0%, transparent 65%), var(--bg);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;
+  transition:opacity .5s ease, transform .5s ease;
+}
+#splashScreen.hide{opacity:0;transform:scale(1.04);pointer-events:none}
+.splash-logo{
+  width:88px;height:88px;border-radius:26px;
+  background:linear-gradient(135deg,var(--acc) 0%,var(--acc2) 100%);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 60px rgba(108,99,255,.5),0 24px 48px rgba(0,0,0,.4);
+  animation:pop .6s cubic-bezier(.34,1.3,.64,1) .1s both;
+}
+.splash-logo svg{width:46px;height:46px}
+.splash-name{
+  font-family:var(--display);font-size:34px;font-weight:800;margin-top:20px;
+  background:linear-gradient(135deg,#fff 0%,rgba(255,255,255,.7) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  animation:fadeUp .5s ease .3s both;
+}
+.splash-tag{font-size:14px;color:var(--tx2);margin-top:6px;animation:fadeUp .5s ease .45s both}
+.splash-dots{display:flex;gap:7px;margin-top:44px;animation:fadeUp .5s ease .6s both}
+.splash-dot{width:8px;height:8px;border-radius:50%;background:var(--acc);opacity:.3}
+.splash-dot:nth-child(1){animation:pulse 1.2s ease .0s infinite}
+.splash-dot:nth-child(2){animation:pulse 1.2s ease .2s infinite}
+.splash-dot:nth-child(3){animation:pulse 1.2s ease .4s infinite}
+.splash-version{position:absolute;bottom:24px;font-size:11px;color:var(--tx3);animation:fadeUp .5s ease .8s both}
+
+/* ══ SUPABASE STATUS INDICATOR ══ */
+.db-status{
+  display:flex;align-items:center;gap:6px;
+  position:absolute;top:12px;right:12px;
+  font-size:11px;color:var(--tx3);
+  background:var(--s2);padding:4px 10px;border-radius:20px;border:1px solid var(--bd);
+}
+.db-dot{width:7px;height:7px;border-radius:50%;background:var(--tx3)}
+.db-dot.ok{background:var(--ok)}
+.db-dot.err{background:var(--err)}
+.db-dot.loading{background:var(--warn);animation:pulse 1s infinite}
+
+/* ══ BACK BUTTON INTERCEPTION ══ */
+/* Visual feedback for back gesture */
+@keyframes backFlash{0%{opacity:0}30%{opacity:.15}100%{opacity:0}}
+.back-flash{position:fixed;inset:0;background:white;pointer-events:none;z-index:9998;animation:backFlash .25s ease}
+
+
+/* ═══════════════════════════════════════════════════════
+   AUTH SCREEN — complete styles
+═══════════════════════════════════════════════════════ */
+#authScreen{
+  display:flex;align-items:center;justify-content:center;
+  min-height:100%;padding:20px 16px;overflow-y:auto;
+  background:radial-gradient(ellipse 140% 80% at 50% -10%, rgba(108,99,255,.22) 0%, transparent 60%), var(--bg);
+}
+.auth-card{
+  width:100%;max-width:400px;background:var(--s1);
+  border:1px solid var(--bd);border-radius:22px;padding:30px 26px;
+  position:relative;animation:fadeUp .4s ease;
+  box-shadow:0 32px 80px rgba(0,0,0,.5), 0 0 0 1px rgba(108,99,255,.07);
+}
+/* Logo */
+.auth-logo-wrap{text-align:center;margin-bottom:22px}
+.auth-logo-icon{
+  width:60px;height:60px;border-radius:16px;margin:0 auto 12px;
+  background:linear-gradient(135deg,var(--acc) 0%,var(--acc2) 100%);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 8px 28px rgba(108,99,255,.4);
+}
+.auth-logo-icon svg{width:32px;height:32px}
+.auth-logo-name{font-family:var(--display);font-size:22px;font-weight:800}
+.auth-tagline{font-size:12px;color:var(--tx2);margin-top:3px}
+/* Tabs */
+.auth-tabs{display:flex;background:var(--s2);border-radius:10px;padding:3px;gap:3px;margin-bottom:18px}
+.atab{flex:1;padding:8px;border:none;border-radius:8px;background:transparent;color:var(--tx2);font-size:13px;font-weight:600;cursor:pointer;transition:.15s}
+.atab.on{background:var(--s1);color:var(--tx);box-shadow:0 2px 6px rgba(0,0,0,.25)}
+/* Fields */
+.fg{margin-bottom:13px}
+.fg label{display:block;font-size:11px;font-weight:700;color:var(--tx2);margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em}
+.fg input{width:100%;background:var(--s2);border:1.5px solid var(--bd);border-radius:10px;padding:11px 14px;color:var(--tx);font-size:14px;outline:none;transition:.2s}
+.fg input:focus{border-color:var(--acc);background:var(--s3);box-shadow:0 0 0 3px rgba(108,99,255,.14)}
+.fg input::placeholder{color:var(--tx3)}
+/* Password toggle */
+.pw-wrap{position:relative}
+.pw-wrap input{padding-right:42px}
+.pw-toggle{position:absolute;right:11px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--tx3);cursor:pointer;padding:4px;display:flex;transition:.15s}
+.pw-toggle:hover{color:var(--tx2)}
+/* Terms row */
+.terms-row{display:flex;align-items:flex-start;gap:9px;margin-bottom:13px;cursor:pointer;font-size:12px;color:var(--tx2);line-height:1.5}
+.terms-row input{margin-top:2px;width:15px;height:15px;accent-color:var(--acc);flex-shrink:0}
+/* Error */
+.auth-err{font-size:12px;color:var(--err);min-height:16px;margin-bottom:8px;display:flex;align-items:center;gap:5px}
+.auth-err:not(:empty)::before{content:'⚠';font-size:12px}
+/* Buttons */
+.btn-prim{width:100%;padding:13px;background:linear-gradient(135deg,var(--acc),#5248d0);border:none;border-radius:12px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;transition:.15s;box-shadow:0 4px 18px rgba(108,99,255,.32);letter-spacing:.01em}
+.btn-prim:hover{transform:translateY(-1px);box-shadow:0 6px 26px rgba(108,99,255,.42)}
+.btn-prim:active{transform:none}
+.btn-prim:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn-sec{width:100%;padding:11px;background:var(--s2);border:1.5px solid var(--bd);border-radius:12px;color:var(--tx2);font-size:13px;font-weight:600;cursor:pointer;transition:.15s}
+.btn-sec:hover{border-color:var(--bd2);color:var(--tx)}
+.auth-sep{text-align:center;font-size:12px;color:var(--tx3);margin:14px 0;position:relative}
+.auth-sep::before,.auth-sep::after{content:'';position:absolute;top:50%;width:40%;height:1px;background:var(--bd)}
+.auth-sep::before{left:0}.auth-sep::after{right:0}
+/* Back btn */
+.auth-back-btn{display:flex;align-items:center;gap:6px;background:none;border:none;color:var(--tx2);font-size:13px;cursor:pointer;margin-bottom:18px;padding:0;transition:.15s}
+.auth-back-btn:hover{color:var(--tx)}
+
+/* ════════════════════════════════════
+   OTP STEP
+════════════════════════════════════ */
+.otp-hero{text-align:center;margin-bottom:22px}
+.otp-hero-icon{
+  width:62px;height:62px;border-radius:18px;margin:0 auto 14px;font-size:28px;
+  background:linear-gradient(135deg,rgba(108,99,255,.18),rgba(255,107,157,.1));
+  border:1px solid rgba(108,99,255,.28);display:flex;align-items:center;justify-content:center;
+}
+.otp-hero-title{font-size:18px;font-weight:700;margin-bottom:8px}
+.otp-hero-sub{font-size:13px;color:var(--tx2);line-height:1.55}
+.otp-email-badge{color:var(--acc);font-weight:700;word-break:break-all}
+/* 6 digit inputs */
+.otp-inputs{display:flex;align-items:center;justify-content:center;gap:7px;margin:0 0 6px}
+.otp-in{
+  width:42px;height:52px;text-align:center;font-size:22px;font-weight:800;
+  background:var(--s2);border:2px solid var(--bd);border-radius:11px;
+  color:var(--tx);outline:none;transition:border-color .15s,background .15s,box-shadow .15s,transform .1s;
+  caret-color:var(--acc);padding:0;
+}
+.otp-in::placeholder{color:var(--bd2);font-size:18px}
+.otp-in:focus{border-color:var(--acc);background:var(--s3);box-shadow:0 0 0 3px rgba(108,99,255,.18);transform:scale(1.06)}
+.otp-in.filled{border-color:rgba(108,99,255,.55);background:var(--s3)}
+.otp-in.error{border-color:var(--err)!important;background:rgba(239,68,68,.07)!important;transform:scale(1)!important}
+.otp-sep-dot{color:var(--tx3);font-size:16px;font-weight:700;padding:0 1px}
+/* Progress bar */
+.otp-progress-wrap{height:3px;background:var(--bd);border-radius:2px;margin:8px 0 4px;overflow:hidden}
+.otp-progress-bar{height:100%;background:linear-gradient(90deg,var(--acc),var(--acc2));width:0%;transition:width .25s ease;border-radius:2px}
+/* Resend */
+.otp-resend-row{text-align:center;margin-top:14px;font-size:13px;color:var(--tx2)}
+.otp-resend-btn{background:none;border:none;color:var(--acc);font-size:13px;font-weight:600;cursor:pointer;padding:0 4px}
+.otp-resend-btn:disabled{color:var(--tx3);cursor:default}
+.otp-timer{color:var(--tx3);font-size:12px}
+.otp-spam-tip{margin-top:14px;padding:10px 12px;background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.2);border-radius:10px;font-size:12px;color:var(--tx2);text-align:center}
+
+/* Forgot password */
+.fp-hero{text-align:center;margin-bottom:20px}
+
 </style>
 </head>
 <body>
@@ -998,20 +1145,44 @@ body.christmas-theme .top-bar{border-bottom-color:#c41e3a33!important}
 <!-- Context Menu -->
 <div class="ctx-menu" id="ctxMenu"></div>
 
+<!-- ═══ SPLASH SCREEN ══ -->
+<div id="splashScreen">
+  <div class="splash-logo">
+    <svg viewBox="0 0 24 24" fill="white" width="46" height="46"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>
+  </div>
+  <div class="splash-name">FreeMode876</div>
+  <div class="splash-tag">Conecte-se. Partilhe. Seja livre.</div>
+  <div class="splash-dots">
+    <div class="splash-dot"></div>
+    <div class="splash-dot"></div>
+    <div class="splash-dot"></div>
+  </div>
+  <div class="splash-version">v7.0</div>
+</div>
+
 <!-- ═══ AUTH SCREEN ════════════════════════════════════════ -->
 <div class="screen active" id="authScreen">
   <div class="auth-particles">
     <div class="ap"></div><div class="ap"></div><div class="ap"></div><div class="ap"></div><div class="ap"></div>
   </div>
   <div class="auth-card">
+
+    <!-- DB status badge -->
+    <div class="db-status" id="dbStatus">
+      <div class="db-dot loading" id="dbDot"></div>
+      <span id="dbLabel">A conectar...</span>
+    </div>
+
+    <!-- Logo -->
     <div class="auth-logo-wrap">
       <div class="auth-logo-icon">
         <svg viewBox="0 0 24 24" fill="white"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>
       </div>
       <div class="auth-logo-name">FreeMode876</div>
-      <div class="auth-tagline">Conecte-se. Compartilhe. Seja livre. ✨</div>
+      <div class="auth-tagline">Conecte-se. Partilhe. Seja livre. ✨</div>
     </div>
-    <!-- Install banner — shows when PWA not installed -->
+
+    <!-- Install banner -->
     <div class="auth-install-bar" id="authInstallBar">
       <div class="aib-icon">📲</div>
       <div class="aib-info">
@@ -1020,27 +1191,156 @@ body.christmas-theme .top-bar{border-bottom-color:#c41e3a33!important}
       </div>
       <button class="aib-btn" id="authInstallBtn" onclick="installFromAuth()">Baixar</button>
     </div>
-    <div class="auth-tabs">
-      <button class="atab on" onclick="switchAuthTab('login',this)">Entrar</button>
-      <button class="atab" onclick="switchAuthTab('register',this)">Cadastrar</button>
+
+    <!-- ══ STEP 1: Login / Register ══ -->
+    <div id="authStep1">
+      <div class="auth-tabs">
+        <button class="atab on" onclick="switchAuthTab('login',this)">Entrar</button>
+        <button class="atab" onclick="switchAuthTab('register',this)">Cadastrar</button>
+      </div>
+
+      <!-- Login form -->
+      <div id="loginForm">
+        <div class="fg">
+          <label>E-mail</label>
+          <input type="email" id="liEmail" placeholder="seu@email.com" autocomplete="email"
+            onkeydown="if(event.key==='Enter')document.getElementById('liPass').focus()">
+        </div>
+        <div class="fg">
+          <label>Senha</label>
+          <div class="pw-wrap">
+            <input type="password" id="liPass" placeholder="••••••••" autocomplete="current-password"
+              onkeydown="if(event.key==='Enter')doLogin()">
+            <button type="button" class="pw-toggle" onclick="togglePw('liPass',this)" tabindex="-1">
+              <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="auth-err" id="liErr"></div>
+        <button class="btn-prim" id="liBtn" onclick="doLogin()">Entrar</button>
+        <div style="text-align:center;margin-top:12px">
+          <button onclick="showForgotPassword()" style="background:none;border:none;color:var(--acc);font-size:12px;cursor:pointer">
+            Esqueci a minha senha
+          </button>
+        </div>
+      </div>
+
+      <!-- Register form -->
+      <div id="regForm" style="display:none">
+        <div class="fg">
+          <label>Nome de exibição</label>
+          <input type="text" id="rgName" placeholder="Como te chamam?" autocomplete="name"
+            onkeydown="if(event.key==='Enter')document.getElementById('rgEmail').focus()">
+        </div>
+        <div class="fg">
+          <label>E-mail</label>
+          <input type="email" id="rgEmail" placeholder="seu@email.com" autocomplete="email"
+            onkeydown="if(event.key==='Enter')document.getElementById('rgPass').focus()">
+        </div>
+        <div class="fg">
+          <label>Senha</label>
+          <div class="pw-wrap">
+            <input type="password" id="rgPass" placeholder="Mínimo 8 caracteres" autocomplete="new-password"
+              onkeydown="if(event.key==='Enter')document.getElementById('rgPass2').focus()">
+            <button type="button" class="pw-toggle" onclick="togglePw('rgPass',this)" tabindex="-1">
+              <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="fg">
+          <label>Confirmar senha</label>
+          <input type="password" id="rgPass2" placeholder="Repete a senha" autocomplete="new-password"
+            onkeydown="if(event.key==='Enter')doRegister()">
+        </div>
+        <label class="terms-row">
+          <input type="checkbox" id="rgTerms">
+          <span>Aceito os <a href="#" onclick="return false" style="color:var(--acc)">Termos de Uso</a> e a <a href="#" onclick="return false" style="color:var(--acc)">Política de Privacidade</a></span>
+        </label>
+        <div class="auth-err" id="rgErr"></div>
+        <button class="btn-prim" id="rgBtn" onclick="doRegister()">Criar conta →</button>
+      </div>
+
+      <div class="auth-sep">ou</div>
+      <button class="btn-sec" onclick="doAnon()">👻 Entrar anonimamente</button>
     </div>
-    <div id="loginForm">
-      <div class="fg"><label>E-mail</label><input type="email" id="liEmail" placeholder="seu@email.com" onkeydown="if(event.key==='Enter')document.getElementById('liPass').focus()"></div>
-      <div class="fg"><label>Senha</label><input type="password" id="liPass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
-      <div class="auth-err" id="liErr"></div>
-      <button class="btn-prim" id="liBtn" onclick="doLogin()">Entrar</button>
+
+    <!-- ══ STEP 2: OTP Verification ══ -->
+    <div id="authStep2" style="display:none">
+      <button onclick="backToAuthStep1()" class="auth-back-btn">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+        Voltar
+      </button>
+
+      <div class="otp-hero">
+        <div class="otp-hero-icon">✉️</div>
+        <div class="otp-hero-title">Verifica o teu e-mail</div>
+        <div class="otp-hero-sub">
+          Enviámos um código de <strong>6 dígitos</strong> para<br>
+          <span id="otpEmailShow" class="otp-email-badge"></span>
+        </div>
+      </div>
+
+      <!-- 6 digit boxes -->
+      <div class="otp-inputs" id="otpInputsWrap">
+        <input class="otp-in" id="otp0" type="tel" inputmode="numeric" maxlength="1"
+          autocomplete="one-time-code" placeholder="·"
+          oninput="otpInput(this,0)" onkeydown="otpKey(event,0)" onpaste="otpPaste(event)">
+        <input class="otp-in" id="otp1" type="tel" inputmode="numeric" maxlength="1" placeholder="·"
+          oninput="otpInput(this,1)" onkeydown="otpKey(event,1)">
+        <input class="otp-in" id="otp2" type="tel" inputmode="numeric" maxlength="1" placeholder="·"
+          oninput="otpInput(this,2)" onkeydown="otpKey(event,2)">
+        <div class="otp-sep-dot">—</div>
+        <input class="otp-in" id="otp3" type="tel" inputmode="numeric" maxlength="1" placeholder="·"
+          oninput="otpInput(this,3)" onkeydown="otpKey(event,3)">
+        <input class="otp-in" id="otp4" type="tel" inputmode="numeric" maxlength="1" placeholder="·"
+          oninput="otpInput(this,4)" onkeydown="otpKey(event,4)">
+        <input class="otp-in" id="otp5" type="tel" inputmode="numeric" maxlength="1" placeholder="·"
+          oninput="otpInput(this,5)" onkeydown="otpKey(event,5)">
+      </div>
+
+      <!-- Progress bar -->
+      <div class="otp-progress-wrap" id="otpProgressWrap">
+        <div class="otp-progress-bar" id="otpProgressBar"></div>
+      </div>
+
+      <div class="auth-err" id="otpErr" style="justify-content:center"></div>
+
+      <button class="btn-prim" id="otpVerifyBtn" onclick="verifyOTP()" style="margin-top:4px">
+        <span id="otpVerifyLabel">Verificar código</span>
+      </button>
+
+      <div class="otp-resend-row">
+        Não recebeste?
+        <button id="otpResendBtn" onclick="resendOTP()" disabled class="otp-resend-btn">Reenviar</button>
+        <span id="otpTimer" class="otp-timer">em <span id="otpCountdown">60</span>s</span>
+      </div>
+
+      <div class="otp-spam-tip">
+        💡 Verifica também a pasta <strong>Spam / Promoções</strong>
+      </div>
     </div>
-    <div id="regForm" style="display:none">
-      <div class="fg"><label>Nome de exibição</label><input type="text" id="rgName" placeholder="Seu nome" onkeydown="if(event.key==='Enter')document.getElementById('rgEmail').focus()"></div>
-      <div class="fg"><label>E-mail</label><input type="email" id="rgEmail" placeholder="seu@email.com" onkeydown="if(event.key==='Enter')document.getElementById('rgPass').focus()"></div>
-      <div class="fg"><label>Senha</label><input type="password" id="rgPass" placeholder="Mínimo 6 caracteres" onkeydown="if(event.key==='Enter')doRegister()"></div>
-      <div class="auth-err" id="rgErr"></div>
-      <button class="btn-prim" id="rgBtn" onclick="doRegister()">Criar conta</button>
+
+    <!-- ══ STEP 3: Forgot Password ══ -->
+    <div id="authStepForgot" style="display:none">
+      <button onclick="backToAuthStep1()" class="auth-back-btn">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+        Voltar
+      </button>
+      <div class="fp-hero">
+        <div style="font-size:36px;margin-bottom:12px">🔑</div>
+        <div style="font-size:18px;font-weight:700;margin-bottom:8px">Recuperar senha</div>
+        <div style="font-size:13px;color:var(--tx2)">Enviaremos um link de redefinição para o teu e-mail</div>
+      </div>
+      <div class="fg">
+        <label>E-mail da conta</label>
+        <input type="email" id="fpEmail" placeholder="seu@email.com"
+          onkeydown="if(event.key==='Enter')doForgotPassword()">
+      </div>
+      <div class="auth-err" id="fpErr"></div>
+      <button class="btn-prim" id="fpBtn" onclick="doForgotPassword()">Enviar link de recuperação</button>
     </div>
-    <div class="auth-sep">ou</div>
-    <button class="btn-sec" onclick="doAnon()">👻 Entrar como Anônimo</button>
+
   </div>
-</div>
 
 <!-- ═══ APP SCREEN ════════════════════════════════════════ -->
 <div class="screen" id="appScreen">
@@ -1499,6 +1799,81 @@ body.christmas-theme .top-bar{border-bottom-color:#c41e3a33!important}
   </div>
 </div>
 
+
+<!-- ═══ CHANNEL VIEW SCREEN ══ -->
+<div class="screen" id="channelScreen">
+  <div style="display:flex;flex-direction:column;height:100%">
+    <!-- Header -->
+    <div style="display:flex;align-items:center;gap:10px;padding:14px 16px;background:var(--s1);border-bottom:1px solid var(--bd);flex-shrink:0">
+      <button onclick="closeChannel()" style="background:none;border:none;color:var(--tx2);cursor:pointer;display:flex;padding:4px">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+      </button>
+      <div style="width:36px;height:36px;border-radius:10px;background:var(--s2);display:flex;align-items:center;justify-content:center;font-size:18px" id="chViewIco">🌍</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:16px;font-weight:700" id="chViewName">Canal</div>
+        <div style="font-size:11px;color:var(--tx2)" id="chViewDesc"></div>
+      </div>
+      <button onclick="openChannelInfo()" style="background:none;border:none;color:var(--tx2);cursor:pointer;display:flex;padding:6px;border-radius:8px;border:1px solid var(--bd)">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+      </button>
+    </div>
+    <!-- Members bar -->
+    <div style="display:flex;align-items:center;gap:6px;padding:8px 16px;background:var(--s2);border-bottom:1px solid var(--bd);flex-shrink:0;overflow-x:auto" id="chMembersBar">
+      <span style="font-size:11px;color:var(--tx3);white-space:nowrap">Membros:</span>
+    </div>
+    <!-- Posts feed -->
+    <div style="flex:1;overflow-y:auto;padding:8px" id="channelPosts"></div>
+    <!-- Compose bar -->
+    <div style="display:flex;align-items:flex-end;gap:8px;padding:10px 12px;background:var(--s1);border-top:1px solid var(--bd);flex-shrink:0">
+      <div id="chImgPrev" style="display:none;position:relative;margin-bottom:4px">
+        <img id="chImgThumb" style="width:60px;height:60px;object-fit:cover;border-radius:8px">
+        <button onclick="clearChImg()" style="position:absolute;top:-6px;right:-6px;background:var(--err);border:none;border-radius:50%;width:18px;height:18px;color:#fff;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center">✕</button>
+      </div>
+      <label style="cursor:pointer;color:var(--tx2);padding:8px;display:flex">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+        <input type="file" accept="image/*" style="display:none" onchange="previewChImg(event)">
+      </label>
+      <textarea id="chPostTA" placeholder="Escreve algo no canal..." rows="1"
+        style="flex:1;background:var(--s2);border:1.5px solid var(--bd);border-radius:12px;padding:9px 12px;color:var(--tx);font-size:14px;resize:none;outline:none;max-height:100px;line-height:1.4"
+        oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"
+        onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChannelPost();}"></textarea>
+      <button onclick="sendChannelPost()" style="background:var(--acc);border:none;border-radius:10px;padding:9px 14px;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ CREATE CHANNEL MODAL ══ -->
+<div class="modal-ov" id="createChannelOv">
+  <div class="modal" style="max-width:380px">
+    <div class="modal-head"><h3>➕ Criar Canal</h3><button class="modal-close" onclick="closeModal('createChannelOv')">✕</button></div>
+    <div class="modal-body">
+      <div class="fg">
+        <label>Nome do canal</label>
+        <input type="text" id="newChName" placeholder="ex: anúncios, geral, off-topic" maxlength="30" style="text-transform:lowercase">
+      </div>
+      <div class="fg">
+        <label>Descrição</label>
+        <input type="text" id="newChDesc" placeholder="Sobre o que é este canal?" maxlength="80">
+      </div>
+      <div class="fg">
+        <label>Ícone (emoji)</label>
+        <input type="text" id="newChIcon" placeholder="📢" maxlength="4" style="font-size:22px;text-align:center">
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0">
+        <div>
+          <div style="font-size:13px;font-weight:600">Canal público</div>
+          <div style="font-size:11px;color:var(--tx2)">Visível para todos os membros</div>
+        </div>
+        <label class="toggle-wrap"><input type="checkbox" id="newChPublic" checked><span class="toggle-slider"></span></label>
+      </div>
+      <div class="auth-err" id="newChErr"></div>
+      <button class="btn-prim" onclick="createChannel()">Criar Canal</button>
+    </div>
+  </div>
+</div>
+
 <!-- ═══ INSTALL FAB (sem ícone, sem "Chrome") ══════════════════ -->
 <button class="install-fab" id="installFab" onclick="installPWA()">
   Baixar para celular
@@ -1670,60 +2045,121 @@ function mkAv(user,size=32,fs=12,extra=''){
 // ════════════════════════════════════════════════════════════════
 // AUTH
 // ════════════════════════════════════════════════════════════════
-function switchAuthTab(tab,el){
-  document.getElementById('loginForm').style.display=tab==='login'?'':'none';
-  document.getElementById('regForm').style.display=tab==='register'?'':'none';
-  document.querySelectorAll('.atab').forEach(t=>t.classList.remove('on'));
-  if(el) el.classList.add('on');
-  // clear any errors
-  ['liErr','rgErr'].forEach(id=>{const e=document.getElementById(id);if(e)e.style.display='none';});
+function switchAuthTab(tab, btn) {
+  document.querySelectorAll('.atab').forEach(b => b.classList.remove('on'));
+  if (btn) btn.classList.add('on');
+  document.getElementById('loginForm').style.display = tab === 'login' ? 'block' : 'none';
+  document.getElementById('regForm').style.display   = tab === 'register' ? 'block' : 'none';
+  clearAuthErr();
 }
-function showAuthErr(id,msg){const el=document.getElementById(id);el.textContent=msg;el.style.display='block';}
-function clearAuthErr(){['liErr','rgErr'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';})}
+function showAuthErr(id, msg) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = msg;
+}
+function clearAuthErr() {
+  ['liErr','rgErr','otpErr','fpErr'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.textContent = ''; el.style.color = ''; }
+  });
+}
 
-function doLogin(){
-  clearAuthErr();
-  const email=document.getElementById('liEmail').value.trim();
-  const pass=document.getElementById('liPass').value;
-  if(!email||!pass){showAuthErr('liErr','Preencha todos os campos.');return;}
-  const btn=document.getElementById('liBtn');
-  if(btn){btn.disabled=true;btn.textContent='Entrando...';}
+
+function _handleSBLogin(sbUser, email, pass, sessionData){
+  // Find or create local user linked to Supabase user
   load();
-  setTimeout(()=>{
-    const u=_users.find(u=>u.email===email);
-    if(!u){showAuthErr('liErr','E-mail não encontrado. Cadastre-se primeiro.');if(btn){btn.disabled=false;btn.textContent='Entrar';}return;}
-    if(u.password!==btoa(pass)){showAuthErr('liErr','Senha incorreta.');if(btn){btn.disabled=false;btn.textContent='Entrar';}return;}
-    CU=u; S.s('fm_sess',u.id);
-    document.getElementById('liErr').style.display='none';
-    enterApp();
-  },400);
-}
-function doRegister(){
-  clearAuthErr();
-  const name=document.getElementById('rgName').value.trim();
-  const email=document.getElementById('rgEmail').value.trim();
-  const pass=document.getElementById('rgPass').value;
-  if(!name||!email||!pass){showAuthErr('rgErr','Preencha todos os campos.');return;}
-  if(pass.length<6){showAuthErr('rgErr','Senha mínimo 6 caracteres.');return;}
-  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){showAuthErr('rgErr','E-mail inválido.');return;}
-  const btn=document.getElementById('rgBtn');
-  if(btn){btn.disabled=true;btn.textContent='Criando conta...';}
-  load();
-  if(_users.find(u=>u.email===email)){
-    showAuthErr('rgErr','E-mail já cadastrado. Faça login.');
-    if(btn){btn.disabled=false;btn.textContent='Criar conta';}return;
+  let u=_users.find(u=>u.email&&u.email.toLowerCase()===email.toLowerCase());
+  if(!u){
+    u={id:sbUser.id||uid(),name:sbUser.user_metadata?.display_name||email.split('@')[0],
+      email,pass,isAnon:false,verified:true,
+      avatar:sbUser.user_metadata?.avatar_url||null,
+      bio:'',followers_ids:[],following_ids:[],posts:0,ts:Date.now()};
+    _users.push(u);
   }
-  const u={id:uid(),name,email,password:btoa(pass),isAnon:false,
-    handle:'@'+name.replace(/\s+/g,'').toLowerCase().substring(0,20),
-    bio:'Novo no FreeMode876!',avatar:null,
-    joined:new Date().toLocaleDateString('pt-BR'),
-    posts:0,followers:0,following:0};
-  _users.push(u);
-  CU=u;
-  save();
-  S.s('fm_sess',u.id);
-  document.getElementById('rgErr').style.display='none';
-  setTimeout(()=>enterApp(),300);
+  u.sbId=sbUser.id;u.verified=true;
+  CU=u;updUser(CU);save();
+  S.s('fm_sess',CU.id);
+  _registerDevice();
+  DB.saveUser(CU).catch(()=>{});
+  enterApp();
+}
+function doLogin() {
+  clearAuthErr();
+  const email = (document.getElementById('liEmail')?.value || '').trim();
+  const pass  = document.getElementById('liPass')?.value || '';
+  if (!email || !pass) { showAuthErr('liErr', 'Preenche todos os campos.'); return; }
+  const btn = document.getElementById('liBtn');
+  if (btn) { btn.disabled = true; btn.textContent = 'A entrar...'; }
+  const reset = () => { if (btn) { btn.disabled = false; btn.textContent = 'Entrar'; } };
+
+  if (DB.mode === 'supabase') {
+    SB.signInEmail(email, pass).then(r => {
+      if (r.error) {
+        showAuthErr('liErr', /invalid|Invalid|credentials/i.test(r.error)
+          ? 'E-mail ou senha incorrectos.' : r.error);
+        reset(); return;
+      }
+      SB._saveSession(r.data);
+      _handleSBLogin(r.data?.user || {}, email, pass, r.data);
+    }).catch(() => { showAuthErr('liErr', 'Erro de ligação.'); reset(); });
+  } else {
+    load();
+    const u = _users.find(u => u.email && u.email.toLowerCase() === email.toLowerCase() && u.pass === pass);
+    if (!u) { showAuthErr('liErr', 'E-mail ou senha incorrectos.'); reset(); return; }
+    CU = u; S.s('fm_sess', CU.id); _registerDevice(); enterApp(); reset();
+  }
+}
+async function doRegister() {
+  clearAuthErr();
+  const name   = (document.getElementById('rgName')?.value  || '').trim();
+  const email  = (document.getElementById('rgEmail')?.value || '').trim();
+  const pass   = document.getElementById('rgPass')?.value  || '';
+  const pass2  = document.getElementById('rgPass2')?.value || '';
+  const terms  = document.getElementById('rgTerms')?.checked;
+
+  if (!name)              { showAuthErr('rgErr', 'Nome obrigatório.');            return; }
+  if (!email)             { showAuthErr('rgErr', 'E-mail obrigatório.');          return; }
+  if (!pass)              { showAuthErr('rgErr', 'Senha obrigatória.');           return; }
+  if (pass.length < 8)    { showAuthErr('rgErr', 'Senha mínimo 8 caracteres.');  return; }
+  if (pass !== pass2)     { showAuthErr('rgErr', 'As senhas não coincidem.');     return; }
+  if (!terms)             { showAuthErr('rgErr', 'Aceita os termos para continuar.'); return; }
+
+  const btn = document.getElementById('rgBtn');
+  if (btn) { btn.disabled = true; btn.textContent = 'A criar conta...'; }
+  const reset = () => { if (btn) { btn.disabled = false; btn.textContent = 'Criar conta →'; } };
+
+  if (DB.mode === 'supabase') {
+    const r = await SB.signUpEmail(email, pass);
+    if (r.error && !/already registered|already exists/i.test(r.error)) {
+      showAuthErr('rgErr', r.error); reset(); return;
+    }
+    const pendingUser = {
+      id: r.data?.user?.id || uid(), name, email, pass, isAnon: false, verified: false,
+      avatar: null, bio: '', followers_ids: [], following_ids: [], posts: 0, ts: Date.now()
+    };
+    // Store pending user on the step2 element
+    const step2 = document.getElementById('authStep2');
+    if (step2) step2._pendingUser = pendingUser;
+    if (r.data?.access_token) SB._saveSession(r.data);
+    await sendOTPCode(email, 'register');
+    _otpPending = { email, type: 'register', ts: Date.now(), code: _otpPending?.code };
+    showOTPForm(email, 'register');
+    reset();
+  } else {
+    load();
+    if (_users.find(u => u.email && u.email.toLowerCase() === email.toLowerCase())) {
+      showAuthErr('rgErr', 'E-mail já registado.'); reset(); return;
+    }
+    const newUser = {
+      id: uid(), name, email, pass, isAnon: false, verified: false,
+      avatar: null, bio: '', followers_ids: [], following_ids: [], posts: 0, ts: Date.now()
+    };
+    const step2 = document.getElementById('authStep2');
+    if (step2) step2._pendingUser = newUser;
+    await sendOTPCode(email, 'register');
+    _otpPending = { email, type: 'register', ts: Date.now(), code: _otpPending?.code };
+    showOTPForm(email, 'register');
+    reset();
+  }
 }
 function doAnon(){
   load();
@@ -1738,19 +2174,11 @@ function doAnon(){
   enterApp();
 }
 function doLogout(){
-  if(_pushInterval){clearInterval(_pushInterval);_pushInterval=null;}
-  S.s('fm_sess',null);
+  if(DB.mode==='supabase') SB.signOut().catch(()=>{});
   CU=null;currentPeer=null;currentGroup=null;
-  grpSelUsers=[];addSelUsers=[];
-  // Reset auth form
-  ['liEmail','liPass','rgName','rgEmail','rgPass'].forEach(id=>{
-    const el=document.getElementById(id);if(el)el.value='';
-  });
-  ['liErr','rgErr'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});
-  const liBtn=document.getElementById('liBtn');if(liBtn){liBtn.disabled=false;liBtn.textContent='Entrar';}
-  // Go back to login tab
-  switchAuthTab('login',document.querySelector('.atab'));
+  S.s('fm_sess',null);
   showScreen('authScreen');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('on'));
 }
 
 // auto-login runs in DOMContentLoaded below
@@ -1758,12 +2186,19 @@ function doLogout(){
 // ════════════════════════════════════════════════════════════════
 // APP INIT
 // ════════════════════════════════════════════════════════════════
-function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  const el=document.getElementById(id);
+  if(el) el.classList.add('active');
+  // Push to browser history for back button
+  if(id!=='authScreen') _safePush({screen:id});
+}
 
 function navTo(tab){
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('on'));
   const navEl=document.getElementById('nav'+tab.charAt(0).toUpperCase()+tab.slice(1));
   if(navEl) navEl.classList.add('on');
+  loadDynamicRooms();
   if(tab==='feed'){
     showScreen('appScreen');renderPosts();
   } else if(tab==='groups'){
@@ -1800,15 +2235,19 @@ function renderLS(){
   else if(lsTab==='groups'){renderGroupsLS(body);}
 }
 function renderRooms(c){
-  c.innerHTML=`<div class="ls-section-title">Canais Públicos</div>`+
-    ROOMS.map(r=>{
+  const allRooms=getAllRooms();
+  c.innerHTML=`
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 8px 4px">
+      <div class="ls-section-title" style="margin:0">Canais</div>
+      <button onclick="openCreateChannelModal()" title="Criar canal"
+        style="background:none;border:none;color:var(--acc);cursor:pointer;font-size:18px;line-height:1;padding:2px 6px;border-radius:6px;border:1px solid rgba(108,99,255,.3)">+</button>
+    </div>`+
+    allRooms.map(r=>{
       const unread=_posts.filter(p=>p.room===r.id&&p.ts>((S.g('rm_read_'+r.id))||0)).length;
       return`<div class="room-row ${currentRoom===r.id?'on':''}" onclick="switchRoom('${r.id}')">
         <div class="room-ico">${r.icon}</div>
-        <div class="room-info"><div class="room-name">${r.name}</div><div class="room-prev">${r.desc}</div></div>
-        <div class="room-meta">
-          ${unread>0?`<div class="room-unread">${unread}</div>`:''}
-        </div>
+        <div class="room-info"><div class="room-name">${r.name}</div><div class="room-prev">${r.desc||''}</div></div>
+        <div class="room-meta">${unread>0?`<div class="room-unread">${unread}</div>`:''}</div>
       </div>`;
     }).join('');
 }
@@ -1842,9 +2281,17 @@ function renderGroupsLS(c){
 function switchRoom(id){
   S.s('rm_read_'+id,Date.now());
   currentRoom=id;
-  document.getElementById('compRoomLabel').textContent=ROOMS.find(r=>r.id===id)?.name||id;
-  renderLS();renderPosts();
-  closeMobSidebar();
+  const r=getAllRooms().find(x=>x.id===id);
+  const lbl=document.getElementById('compRoomLabel');
+  if(lbl) lbl.textContent=r?.name||id;
+  renderLS();
+  // On mobile → open full channel view; on desktop → render in feed
+  if(window.innerWidth<=700){
+    openChannel(id);
+  } else {
+    renderPosts();
+    closeMobSidebar();
+  }
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -1867,6 +2314,7 @@ function sendPost(){
     room:currentRoom,likes:[],comments:[]};
   _posts.unshift(p);
   CU.posts=(CU.posts||0)+1;updUser(CU);save();
+  DB.savePost(p).catch(()=>{});
   document.getElementById('postTA').value='';document.getElementById('postTA').style.height='auto';rmCompImg();
   playSendSound();renderPosts();
   broadcast({type:'new_post',uid:CU.id,room:currentRoom,preview:txt.substring(0,60)});
@@ -2020,6 +2468,7 @@ function sendPrivateMsg() {
   const msg={id:uid(),from:CU.id,txt,img:chatImgData,ts:Date.now()};
   _convs[key].push(msg);
   save();
+  DB.saveMessage(msg,CU.id,currentPeer.id).catch(()=>{});
   taEl.value='';taEl.style.height='auto';removeChatImg();
   playSendSound();
   renderChatMsgs();
@@ -3408,6 +3857,7 @@ function enterApp(){
   showScreen('appScreen');
   currentRoom='geral';currentPeer=null;currentGroup=null;
   renderAv(document.getElementById('compAv'),CU,38,14);
+  loadDynamicRooms();
   seedData();
   document.querySelectorAll('.lstab').forEach(t=>t.classList.remove('on'));
   const firstLsTab=document.getElementById('lsRoomsTab');
@@ -3419,7 +3869,9 @@ function enterApp(){
   initPWA();schedulePushes();
   initRealTime();
   _registerDevice();
-  updateAuthInstallBar();
+  hideSplash();
+  // Push main screen to history so back btn works
+  _safePush({screen:'app'});
   // New features init
   checkHoliday();
   checkNewUsers();
@@ -4095,23 +4547,891 @@ function checkRevocation(){
   }
 }
 
+
+// ═══════════════════════════════════════════════════════════════════════
+// SPLASH SCREEN
+// ═══════════════════════════════════════════════════════════════════════
+// Safe history push — works in iframes and restricted contexts
+function _safePush(state){
+  try{ history.pushState(state,'',null); }catch(e){}
+}
+
+function hideSplash(){
+  const s=document.getElementById('splashScreen');
+  if(!s) return;
+  s.classList.add('hide');
+  setTimeout(()=>{ if(s.parentNode) s.parentNode.removeChild(s); },600);
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// SUPABASE CONFIG
+// 1. Acede a https://app.supabase.com → o teu projecto → Settings → API
+// 2. Copia "Project URL" e "anon public key" para baixo
+// 3. Em Authentication → Email Templates → personaliza com o template no email_template.html
+// 4. Em Authentication → Settings → activa "Enable Email OTP" e define OTP expiry 600s
+// ═══════════════════════════════════════════════════════════════════════
+const SUPABASE_URL = '';      // 'https://XXXX.supabase.co'
+const SUPABASE_ANON_KEY = ''; // 'eyJhbGci...'
+
+// Full Supabase REST client
+const SB = {
+  _token: null,  // user JWT after login
+  _refresh: null,
+  _userId: null,
+
+  _h(extra){
+    const h={
+      'Content-Type':'application/json',
+      'apikey': SUPABASE_ANON_KEY,
+      'Authorization':'Bearer '+(SB._token||SUPABASE_ANON_KEY)
+    };
+    if(extra) Object.assign(h,extra);
+    return h;
+  },
+
+  async _req(method, path, body, extraHeaders){
+    if(!SUPABASE_URL||!SUPABASE_ANON_KEY) return {error:'not_configured',data:null};
+    try{
+      const r=await fetch(SUPABASE_URL+path,{
+        method,
+        headers:SB._h(extraHeaders),
+        body:body?JSON.stringify(body):undefined
+      });
+      const text=await r.text();
+      let d=null;
+      try{d=JSON.parse(text);}catch(e){d=text;}
+      if(!r.ok) return{error:d?.message||d?.msg||String(d)||r.statusText,data:null,status:r.status};
+      return{data:d,error:null,status:r.status};
+    }catch(e){return{error:e.message,data:null};}
+  },
+
+  // ── AUTH ──────────────────────────────────────────────────────────────
+  async signUpEmail(email, password){
+    const r=await SB._req('POST','/auth/v1/signup',{email,password,data:{created_from:'fm876'}});
+    if(r.data?.access_token){SB._token=r.data.access_token;SB._refresh=r.data.refresh_token;SB._userId=r.data.user?.id;}
+    return r;
+  },
+  async signInEmail(email, password){
+    const r=await SB._req('POST','/auth/v1/token?grant_type=password',{email,password});
+    if(r.data?.access_token){SB._token=r.data.access_token;SB._refresh=r.data.refresh_token;SB._userId=r.data.user?.id;}
+    return r;
+  },
+  async sendOTPEmail(email){
+    // Uses Supabase magic link / OTP — configure template in dashboard
+    return SB._req('POST','/auth/v1/otp',{email,create_user:true});
+  },
+  async verifyEmailOTP(email, token){
+    const r=await SB._req('POST','/auth/v1/verify',{type:'email',email,token});
+    if(r.data?.access_token){SB._token=r.data.access_token;SB._refresh=r.data.refresh_token;SB._userId=r.data.user?.id;}
+    return r;
+  },
+  async signOut(){
+    await SB._req('POST','/auth/v1/logout');
+    SB._token=null;SB._refresh=null;SB._userId=null;
+    localStorage.removeItem('sb_session');
+  },
+  async refreshSession(){
+    const stored=JSON.parse(localStorage.getItem('sb_session')||'null');
+    if(!stored?.refresh_token) return null;
+    const r=await SB._req('POST','/auth/v1/token?grant_type=refresh_token',{refresh_token:stored.refresh_token});
+    if(r.data?.access_token){
+      SB._token=r.data.access_token;SB._refresh=r.data.refresh_token;SB._userId=r.data.user?.id;
+      localStorage.setItem('sb_session',JSON.stringify({access_token:SB._token,refresh_token:SB._refresh,user_id:SB._userId}));
+      return r.data;
+    }
+    return null;
+  },
+  async getUser(){
+    return SB._req('GET','/auth/v1/user');
+  },
+  _saveSession(d){
+    if(d?.access_token){
+      SB._token=d.access_token;SB._refresh=d.refresh_token;SB._userId=d.user?.id||d.user_id;
+      localStorage.setItem('sb_session',JSON.stringify({access_token:d.access_token,refresh_token:d.refresh_token,user_id:SB._userId}));
+    }
+  },
+  _loadSession(){
+    const s=JSON.parse(localStorage.getItem('sb_session')||'null');
+    if(s?.access_token){SB._token=s.access_token;SB._refresh=s.refresh_token;SB._userId=s.user_id;}
+    return s;
+  },
+
+  // ── DATABASE (REST API) ───────────────────────────────────────────────
+  async select(table,query='',single=false){
+    const h=single?{'Accept':'application/vnd.pgrst.object+json'}:{};
+    return SB._req('GET',`/rest/v1/${table}?${query}`,null,h);
+  },
+  async insert(table,row){
+    return SB._req('POST',`/rest/v1/${table}`,row,{'Prefer':'return=representation'});
+  },
+  async upsert(table,row,onConflict){
+    const q=onConflict?`?on_conflict=${onConflict}`:'';
+    return SB._req('POST',`/rest/v1/${table}${q}`,row,{'Prefer':'return=representation,resolution=merge-duplicates'});
+  },
+  async update(table,row,match){
+    const q=Object.entries(match).map(([k,v])=>`${k}=eq.${encodeURIComponent(v)}`).join('&');
+    return SB._req('PATCH',`/rest/v1/${table}?${q}`,row,{'Prefer':'return=representation'});
+  },
+  async delete(table,match){
+    const q=Object.entries(match).map(([k,v])=>`${k}=eq.${encodeURIComponent(v)}`).join('&');
+    return SB._req('DELETE',`/rest/v1/${table}?${q}`);
+  },
+  // Realtime via channel  
+  _channels:{},
+  subscribe(channel, table, cb){
+    // Polling fallback for REST — 3s interval
+    const key=channel+'_'+table;
+    if(SB._channels[key]) return;
+    SB._channels[key]=setInterval(async()=>{
+      const r=await SB.select(table,'order=created_at.desc&limit=50');
+      if(!r.error&&r.data) cb(r.data);
+    },3000);
+  },
+  unsubscribe(channel, table){
+    const key=channel+'_'+table;
+    if(SB._channels[key]){clearInterval(SB._channels[key]);delete SB._channels[key];}
+  }
+};
+
+// ═══════════════════════════════════════════════════════════════════════
+// FIREBASE CONFIG
+// Replace with your own Firebase config
+// Get it at: https://console.firebase.google.com → Project Settings → Web App
+// ═══════════════════════════════════════════════════════════════════════
+const FIREBASE_CONFIG = {
+  apiKey: '',            // e.g. 'AIzaSy...'
+  authDomain: '',        // e.g. 'myapp.firebaseapp.com'
+  projectId: '',         // e.g. 'myapp-12345'
+  storageBucket: '',     // e.g. 'myapp.appspot.com'
+  messagingSenderId: '', // e.g. '123456789'
+  appId: ''              // e.g. '1:123:web:abc'
+};
+// Firebase REST wrapper (no SDK — lightweight)
+const FB = {
+  _token: null,
+  _baseUrl(){return `https://firestore.googleapis.com/v1/projects/${FIREBASE_CONFIG.projectId}/databases/(default)/documents`;},
+  async _getToken(){
+    if(!FIREBASE_CONFIG.apiKey) return null;
+    // For client-side, use stored token or anonymous auth
+    const stored = localStorage.getItem('fb_id_token');
+    if(stored){const exp=JSON.parse(atob(stored.split('.')[1]));if(exp.exp>Date.now()/1000+300)return stored;}
+    try{
+      const r=await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInAnonymously?key=${FIREBASE_CONFIG.apiKey}`,
+        {method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});
+      const d=await r.json();
+      if(d.idToken){localStorage.setItem('fb_id_token',d.idToken);return d.idToken;}
+    }catch(e){}
+    return null;
+  },
+  async req(method,path,body){
+    if(!FIREBASE_CONFIG.projectId) return {error:'no_config'};
+    const token=await FB._getToken();
+    const headers={'Content-Type':'application/json'};
+    if(token) headers['Authorization']='Bearer '+token;
+    try{
+      const r=await fetch(FB._baseUrl()+path,{method,headers,body:body?JSON.stringify(body):undefined});
+      const d=await r.json();
+      if(!r.ok) return {error:d?.error?.message||r.statusText};
+      return {data:d,error:null};
+    }catch(e){return {error:e.message};}
+  },
+  async getDoc(collection,docId){return FB.req('GET',`/${collection}/${docId}`)},
+  async setDoc(collection,docId,data){
+    const fields={};
+    Object.entries(data).forEach(([k,v])=>{
+      if(typeof v==='string') fields[k]={stringValue:v};
+      else if(typeof v==='number') fields[k]={integerValue:v};
+      else if(typeof v==='boolean') fields[k]={booleanValue:v};
+      else fields[k]={stringValue:JSON.stringify(v)};
+    });
+    return FB.req('PATCH',`/${collection}/${docId}`,{fields});
+  },
+  async deleteDoc(collection,docId){return FB.req('DELETE',`/${collection}/${docId}`);}
+};
+
+// ═══════════════════════════════════════════════════════════════════════
+// DB LAYER — Supabase first → Firebase → localStorage fallback
+// ═══════════════════════════════════════════════════════════════════════
+const DB = {
+  mode: 'local',
+
+  async init(){
+    _setDbStatus('loading','A conectar...');
+    // Try restore Supabase session first
+    if(SUPABASE_URL && SUPABASE_ANON_KEY){
+      SB._loadSession();
+      if(SB._token){
+        const r=await SB.getUser();
+        if(!r.error){
+          DB.mode='supabase';
+          _setDbStatus('ok','Supabase ✓');
+          // Start realtime sync
+          DB._startSync();
+          return 'supabase';
+        }
+      }
+      // No session — still mark as supabase mode for auth
+      DB.mode='supabase';
+      _setDbStatus('ok','Supabase');
+      return 'supabase';
+    }
+    if(FIREBASE_CONFIG.projectId && FIREBASE_CONFIG.apiKey){
+      DB.mode='firebase';
+      _setDbStatus('ok','Firebase ✓');
+      return 'firebase';
+    }
+    DB.mode='local';
+    _setDbStatus('local','Local');
+    return 'local';
+  },
+
+  _startSync(){
+    // Sync posts every 5s from Supabase
+    if(DB.mode!=='supabase') return;
+    setInterval(async()=>{
+      if(!CU||!SUPABASE_URL) return;
+      const r=await SB.select('posts',`room=eq.${currentRoom}&order=created_at.desc&limit=30`);
+      if(!r.error&&Array.isArray(r.data)&&r.data.length){
+        const remotePosts=r.data.map(DB._mapPost);
+        // Merge with local
+        remotePosts.forEach(rp=>{
+          if(!_posts.find(p=>p.id===rp.id)) _posts.unshift(rp);
+        });
+        renderPosts();
+      }
+    },5000);
+  },
+
+  _mapPost(row){
+    return{id:row.id,uid:row.user_id,uname:row.author_name,uavatar:row.author_avatar,
+      txt:row.content,img:row.image_url,ts:new Date(row.created_at).getTime(),
+      room:row.room_id,likes:row.likes||[],comments:row.comments||[]};
+  },
+  _mapMsg(row){
+    return{id:row.id,from:row.sender_id,txt:row.content,img:row.image_url,
+      ts:new Date(row.created_at).getTime(),read:row.is_read||false};
+  },
+
+  // ── USER ops ────────────────────────────────────────────────────────
+  async saveUser(user){
+    if(DB.mode==='supabase'&&SB._token){
+      await SB.upsert('profiles',{
+        id:user.id, display_name:user.name, email:user.email,
+        avatar_url:user.avatar, bio:user.bio||'',
+        is_anonymous:user.isAnon||false, updated_at:new Date().toISOString()
+      },'id');
+    } else if(DB.mode==='firebase'){
+      await FB.setDoc('users',user.id,user);
+    }
+    S.s('fm_u_'+user.id,user);
+  },
+
+  async getProfile(userId){
+    if(DB.mode==='supabase'&&SB._token){
+      const r=await SB.select('profiles',`id=eq.${userId}`,true);
+      if(!r.error&&r.data) return r.data;
+    }
+    return S.g('fm_u_'+userId);
+  },
+
+  // ── POST ops ────────────────────────────────────────────────────────
+  async savePost(post){
+    if(DB.mode==='supabase'&&SB._token){
+      const r=await SB.insert('posts',{
+        id:post.id, user_id:post.uid, author_name:post.uname,
+        author_avatar:post.uavatar||null, content:post.txt||null,
+        image_url:post.img||null, room_id:post.room,
+        likes:post.likes||[], comments:post.comments||[],
+        created_at:new Date(post.ts).toISOString()
+      });
+      if(r.error) console.warn('savePost error:',r.error);
+    }
+  },
+  async loadPosts(roomId){
+    if(DB.mode==='supabase'&&SB._token){
+      const r=await SB.select('posts',`room_id=eq.${roomId}&order=created_at.desc&limit=50`);
+      if(!r.error&&Array.isArray(r.data)) return r.data.map(DB._mapPost);
+    }
+    return _posts.filter(p=>p.room===roomId);
+  },
+  async deletePost(postId){
+    if(DB.mode==='supabase'&&SB._token) await SB.delete('posts',{id:postId});
+  },
+  async toggleLikePost(postId, likes){
+    if(DB.mode==='supabase'&&SB._token) await SB.update('posts',{likes},{id:postId});
+  },
+
+  // ── MESSAGE ops ─────────────────────────────────────────────────────
+  async saveMessage(msg, fromId, toId){
+    if(DB.mode==='supabase'&&SB._token){
+      const r=await SB.insert('messages',{
+        id:msg.id, sender_id:fromId, receiver_id:toId,
+        content:msg.txt||null, image_url:msg.img||null,
+        is_read:false, created_at:new Date(msg.ts).toISOString()
+      });
+      if(r.error) console.warn('saveMessage error:',r.error);
+    }
+  },
+  async loadMessages(userId1, userId2){
+    if(DB.mode==='supabase'&&SB._token){
+      const q=`or=(and(sender_id.eq.${userId1},receiver_id.eq.${userId2}),and(sender_id.eq.${userId2},receiver_id.eq.${userId1}))&order=created_at.asc&limit=100`;
+      const r=await SB.select('messages',q);
+      if(!r.error&&Array.isArray(r.data)) return r.data.map(DB._mapMsg);
+    }
+    const key=convKey(userId1,userId2);
+    return _convs[key]||[];
+  },
+  async markRead(msgIds){
+    if(DB.mode==='supabase'&&SB._token&&msgIds.length){
+      await SB._req('PATCH',`/rest/v1/messages?id=in.(${msgIds.join(',')})`,{is_read:true});
+    }
+  },
+
+  // ── CHANNEL ops ─────────────────────────────────────────────────────
+  async getChannels(){
+    if(DB.mode==='supabase'&&SB._token){
+      const r=await SB.select('channels','order=created_at.asc');
+      if(!r.error&&Array.isArray(r.data)) return r.data;
+    }
+    return null;
+  },
+  async createChannel(ch){
+    if(DB.mode==='supabase'&&SB._token){
+      return SB.insert('channels',{
+        id:ch.id, name:ch.name, icon:ch.icon||'#',
+        description:ch.desc||'', owner_id:CU.id,
+        is_public:ch.isPublic!==false, created_at:new Date().toISOString()
+      });
+    }
+    return {data:ch,error:null};
+  },
+
+  // ── GROUP ops ───────────────────────────────────────────────────────
+  async saveGroup(group){
+    if(DB.mode==='supabase'&&SB._token){
+      await SB.upsert('groups',{
+        id:group.id, name:group.name, icon:group.icon||'👥',
+        avatar_url:group.avatar||null, description:group.desc||'',
+        owner_id:group.ownerId||CU.id, members:JSON.stringify(group.members),
+        created_at:new Date(group.ts||Date.now()).toISOString()
+      },'id');
+    }
+  },
+  async loadGroups(){
+    if(DB.mode==='supabase'&&SB._token){
+      const r=await SB.select('group_members',`user_id=eq.${CU.id}`);
+      if(!r.error&&Array.isArray(r.data)){
+        const gids=r.data.map(m=>m.group_id);
+        if(gids.length){
+          const gr=await SB.select('groups',`id=in.(${gids.join(',')})`);
+          if(!gr.error&&Array.isArray(gr.data)) return gr.data;
+        }
+      }
+    }
+    return null;
+  },
+
+  // ── NOTIFICATION ops ────────────────────────────────────────────────
+  async saveNotif(notif){
+    if(DB.mode==='supabase'&&SB._token){
+      SB.insert('notifications',{
+        id:notif.id, user_id:CU.id, icon:notif.ico,
+        title:notif.title, body:notif.body||'',
+        category:notif.category||'system', is_read:notif.read||false,
+        created_at:new Date(notif.ts).toISOString()
+      }).catch(()=>{});
+    }
+  }
+};
+
+function _setDbStatus(state, label){
+  const dot=document.getElementById('dbDot');
+  const lbl=document.getElementById('dbLabel');
+  const map={loading:'db-dot loading',ok:'db-dot ok',err:'db-dot err',local:'db-dot'};
+  if(dot) dot.className=map[state]||'db-dot';
+  if(lbl) lbl.textContent=label;
+}
+
+
+// ═══════════════════════════════════════════════════════════════════════
+// OTP SYSTEM
+// ═══════════════════════════════════════════════════════════════════════
+let _otpPending = null; // {email, code, ts, type}
+let _otpCountdownTimer = null;
+
+function showOTPForm(email, type) {
+  // Set email display
+  const badge = document.getElementById('otpEmailShow');
+  if (badge) badge.textContent = email;
+  // Clear all 6 inputs
+  for (let i = 0; i < 6; i++) {
+    const el = document.getElementById('otp' + i);
+    if (el) { el.value = ''; el.classList.remove('filled','error'); }
+  }
+  clearAuthErr();
+  setOTPProgress(0);
+  _showAuthStep('authStep2');
+  setTimeout(() => document.getElementById('otp0')?.focus(), 120);
+  startOTPCountdown(60);
+}
+
+function showAuthForm(){
+  document.getElementById('otpForm').style.display='none';
+  document.getElementById('loginForm').style.display='block';
+  if(_otpCountdownTimer) clearInterval(_otpCountdownTimer);
+}
+
+
+function otpPaste(e) {
+  e.preventDefault();
+  const text = (e.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g, '');
+  if (text.length >= 6) {
+    for (let i = 0; i < 6; i++) {
+      const el = document.getElementById('otp' + i);
+      if (el) { el.value = text[i]; el.classList.add('filled'); }
+    }
+    setOTPProgress(100);
+    setTimeout(verifyOTP, 200);
+  }
+}
+function otpInput(el, idx) {
+  el.value = el.value.replace(/[^0-9]/g, '').slice(-1);
+  el.classList.toggle('filled', !!el.value);
+  el.classList.remove('error');
+  // Move focus forward
+  if (el.value && idx < 5) document.getElementById('otp' + (idx + 1))?.focus();
+  // Update progress
+  let filled = 0;
+  for (let i = 0; i < 6; i++) if (document.getElementById('otp' + i)?.value) filled++;
+  setOTPProgress(filled / 6 * 100);
+  // Auto-submit when all filled
+  if (idx === 5 && el.value) setTimeout(verifyOTP, 120);
+}
+
+function otpKey(e, idx) {
+  if (e.key === 'Backspace' && !e.target.value && idx > 0) {
+    const prev = document.getElementById('otp' + (idx - 1));
+    if (prev) { prev.value = ''; prev.classList.remove('filled'); prev.focus(); }
+    // Recalc progress
+    let filled = 0;
+    for (let i = 0; i < 6; i++) if (document.getElementById('otp' + i)?.value) filled++;
+    setOTPProgress(filled / 6 * 100);
+  }
+  if (e.key === 'Enter') verifyOTP();
+}
+
+function getOTPCode() {
+  let code = '';
+  for (let i = 0; i < 6; i++) code += (document.getElementById('otp' + i)?.value || '');
+  return code;
+}
+
+async function verifyOTP() {
+  const code = getOTPCode();
+  if (code.length < 6) { shakeOTP(); showAuthErr('otpErr', 'Introduz os 6 dígitos.'); return; }
+
+  const btn = document.getElementById('otpVerifyBtn');
+  const lbl = document.getElementById('otpVerifyLabel');
+  if (btn) btn.disabled = true;
+  if (lbl) lbl.textContent = 'A verificar...';
+  const reset = () => { if (btn) btn.disabled = false; if (lbl) lbl.textContent = 'Verificar código'; };
+
+  try {
+    // ── Supabase OTP ──────────────────────────────
+    if (DB.mode === 'supabase' && _otpPending?.email) {
+      const r = await SB.verifyEmailOTP(_otpPending.email, code);
+      if (r.error) {
+        const msg = /expired/i.test(r.error) ? 'Código expirado. Clica em Reenviar.'
+                  : /invalid/i.test(r.error)  ? 'Código inválido. Verifica e tenta novamente.'
+                  : r.error;
+        showAuthErr('otpErr', msg);
+        shakeOTP(); reset(); return;
+      }
+      // ── SUCCESS ──
+      SB._saveSession(r.data);
+      if (_otpCountdownTimer) clearInterval(_otpCountdownTimer);
+      const pendingUser = document.getElementById('authStep2')?._pendingUser;
+      if (pendingUser) {
+        pendingUser.id = r.data?.user?.id || pendingUser.id;
+        pendingUser.verified = true;
+        pendingUser.sbId = r.data?.user?.id;
+        _users.push(pendingUser);
+        CU = pendingUser;
+        updUser(CU); save(); S.s('fm_sess', CU.id);
+        await DB.saveUser(CU).catch(() => {});
+      } else {
+        _handleSBLogin(r.data?.user || {}, _otpPending.email, '', r.data);
+        _otpPending = null; return;
+      }
+      _otpPending = null;
+      if (document.getElementById('authStep2')) document.getElementById('authStep2')._pendingUser = null;
+      _registerDevice(); enterApp(); return;
+    }
+
+    // ── Local OTP fallback ────────────────────────
+    if (_otpPending?.code && code === _otpPending.code && Date.now() - _otpPending.ts < 600000) {
+      const pendingUser = document.getElementById('authStep2')?._pendingUser;
+      if (pendingUser) {
+        pendingUser.verified = true;
+        _users.push(pendingUser); CU = pendingUser;
+        updUser(CU); save(); S.s('fm_sess', CU.id);
+      }
+      _otpPending = null;
+      if (_otpCountdownTimer) clearInterval(_otpCountdownTimer);
+      _registerDevice(); enterApp(); return;
+    }
+
+    showAuthErr('otpErr', 'Código inválido ou expirado.'); shakeOTP(); reset();
+  } catch (e) {
+    showAuthErr('otpErr', 'Erro de ligação. Tenta novamente.'); reset();
+  }
+}
+
+async function resendOTP() {
+  if (!_otpPending?.email) return;
+  const btn = document.getElementById('otpResendBtn');
+  if (btn) btn.disabled = true;
+  showAuthErr('otpErr', '');
+  await sendOTPCode(_otpPending.email, _otpPending.type);
+  for (let i = 0; i < 6; i++) {
+    const el = document.getElementById('otp' + i);
+    if (el) { el.value = ''; el.classList.remove('filled'); }
+  }
+  setOTPProgress(0);
+  document.getElementById('otp0')?.focus();
+  startOTPCountdown(60);
+}
+
+async function sendOTPCode(email, type) {
+  if (DB.mode === 'supabase') {
+    const r = await SB.sendOTPEmail(email);
+    if (!r.error) return { ok: true };
+    console.warn('[FM876] SB OTP error:', r.error);
+  }
+  // Local fallback
+  const code = Math.floor(100000 + Math.random() * 900000).toString();
+  if (_otpPending) _otpPending.code = code;
+  else _otpPending = { email, type, code, ts: Date.now() };
+  pushNotif('🔑', 'Código (modo local)', 'Código: ' + code, true);
+  console.info('[FM876 OTP DEV]', email, '→', code);
+  return { ok: true, code };
+}
+
+function startOTPCountdown(secs) {
+  if (_otpCountdownTimer) clearInterval(_otpCountdownTimer);
+  const resendBtn = document.getElementById('otpResendBtn');
+  const timerEl   = document.getElementById('otpTimer');
+  const cdEl      = document.getElementById('otpCountdown');
+  if (resendBtn) resendBtn.disabled = true;
+  if (timerEl)   timerEl.style.display = 'inline';
+  let s = secs;
+  if (cdEl) cdEl.textContent = s;
+  _otpCountdownTimer = setInterval(() => {
+    s--;
+    if (cdEl) cdEl.textContent = s;
+    if (s <= 0) {
+      clearInterval(_otpCountdownTimer);
+      if (resendBtn) resendBtn.disabled = false;
+      if (timerEl)   timerEl.style.display = 'none';
+    }
+  }, 1000);
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// HISTORY / BACK BUTTON SYSTEM
+// ═══════════════════════════════════════════════════════════════════════
+const NAV_STACK = []; // screen history stack
+let _backLock = false;
+
+function pushNav(screenId, meta){
+  _safePush({screen:screenId, meta});
+  NAV_STACK.push({screenId, meta});
+}
+
+function handleBackBtn(){
+  if(_backLock) return;
+  // If a modal is open, close it
+  const openModal = document.querySelector('.modal-ov.open');
+  if(openModal){ openModal.classList.remove('open'); return; }
+  // If notif panel open, close it
+  if(document.getElementById('notifPanel').classList.contains('open')){
+    closeNotifPanel(); return;
+  }
+  // If mob sidebar open, close it
+  const mobSidebar = document.getElementById('lSidebar');
+  if(mobSidebar?.classList.contains('mob-open')){ closeMobSidebar(); return; }
+  // Navigate back by screen
+  const cur = document.querySelector('.screen.active');
+  const curId = cur?.id;
+  if(curId === 'channelScreen'){
+    closeChannel(); return;
+  }
+  if(curId === 'privateScreen'){
+    closePrivate(); return;
+  }
+  if(curId === 'groupsScreen' || curId === 'msgsScreen'){
+    navTo('feed'); return;
+  }
+  if(curId === 'appScreen'){
+    // On main screen — ask to minimise instead of exiting
+    _showExitPrompt();
+    return;
+  }
+  if(curId === 'authScreen'){
+    // On auth — if OTP step visible, go back to step1
+    const step2 = document.getElementById('authStep2');
+    if(step2 && step2.style.display !== 'none'){ backToAuthStep1(); return; }
+    const stepF = document.getElementById('authStepForgot');
+    if(stepF && stepF.style.display !== 'none'){ backToAuthStep1(); return; }
+    // Nothing else to go back to
+    _showExitPrompt();
+    return;
+  }
+}
+
+function _showExitPrompt(){
+  // Flash overlay briefly then show a toast
+  const flash=document.createElement('div');
+  flash.className='back-flash';
+  document.body.appendChild(flash);
+  setTimeout(()=>flash.remove(),300);
+  pushNotif('👋','Prima de novo para sair','',false);
+  _backLock=true;
+  setTimeout(()=>_backLock=false,2000);
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// PUSH NAV on showScreen so history stays in sync
+// ═══════════════════════════════════════════════════════════════════════
+
+
+// ══════════════════════════════════════════════════════════════
+// CHANNEL / ROOM SYSTEM
+// ══════════════════════════════════════════════════════════════
+let _dynamicRooms = []; // rooms created by users
+let _chImgData = null;
+
+function getAllRooms(){
+  return [...ROOMS, ..._dynamicRooms];
+}
+
+function openChannel(roomId){
+  const r = getAllRooms().find(x=>x.id===roomId);
+  if(!r) return;
+  currentRoom = roomId;
+  document.getElementById('chViewIco').textContent = r.icon||'#';
+  document.getElementById('chViewName').textContent = r.name;
+  document.getElementById('chViewDesc').textContent = r.desc||'';
+  // Members bar — show unique authors
+  const authors = [...new Map(_posts.filter(p=>p.room===roomId).map(p=>[p.uid,p])).values()].slice(0,8);
+  document.getElementById('chMembersBar').innerHTML =
+    '<span style="font-size:11px;color:var(--tx3);white-space:nowrap">Membros: </span>' +
+    authors.map(p=>`<div title="${esc(p.uname)}" style="width:28px;height:28px;border-radius:50%;background:var(--acc);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;overflow:hidden">${p.uavatar?`<img src="${p.uavatar}" style="width:100%;height:100%;object-fit:cover">`:ini(p.uname||'?')}</div>`).join('')+
+    (authors.length===0?'<span style="font-size:11px;color:var(--tx3)">Nenhum ainda</span>':'');
+  S.s('rm_read_'+roomId, Date.now());
+  renderChannelPosts();
+  showScreen('channelScreen');
+  history.pushState&&_safePush({screen:'channelScreen'});
+}
+
+function closeChannel(){
+  navTo('feed');
+}
+
+function renderChannelPosts(){
+  load();
+  const posts = _posts.filter(p=>p.room===currentRoom);
+  const c = document.getElementById('channelPosts');
+  if(!posts.length){
+    const r = getAllRooms().find(x=>x.id===currentRoom);
+    c.innerHTML=`<div style="text-align:center;padding:40px 20px;color:var(--tx2)">
+      <div style="font-size:44px;margin-bottom:12px">${r?.icon||'📢'}</div>
+      <div style="font-size:16px;font-weight:700;color:var(--tx);margin-bottom:6px">Canal ${r?.name||''}</div>
+      <div style="font-size:13px">${r?.desc||'Seja o primeiro a publicar!'}</div>
+    </div>`;
+    return;
+  }
+  c.innerHTML = posts.map(buildPostCard).join('');
+  // scroll to bottom
+  setTimeout(()=>{const el=document.getElementById('channelPosts');if(el)el.scrollTop=el.scrollHeight;},50);
+}
+
+function sendChannelPost(){
+  const ta = document.getElementById('chPostTA');
+  const txt = ta?.value.trim()||'';
+  if(!txt&&!_chImgData) return;
+  const p={id:uid(),uid:CU.id,uname:CU.name,uavatar:CU.avatar,
+    txt,img:_chImgData,time:fmtTime(Date.now()),ts:Date.now(),
+    room:currentRoom,likes:[],comments:[]};
+  _posts.unshift(p);
+  CU.posts=(CU.posts||0)+1;updUser(CU);save();
+  DB.savePost(p).catch(()=>{});
+  if(ta){ta.value='';ta.style.height='auto';}
+  clearChImg();
+  playSendSound();
+  renderChannelPosts();
+  broadcast({type:'new_post',uid:CU.id,room:currentRoom,preview:txt.substring(0,60)});
+}
+
+function previewChImg(e){
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    _chImgData=ev.target.result;
+    const thumb=document.getElementById('chImgThumb');
+    if(thumb) thumb.src=_chImgData;
+    const prev=document.getElementById('chImgPrev');
+    if(prev) prev.style.display='block';
+  };r.readAsDataURL(f);
+}
+function clearChImg(){_chImgData=null;const p=document.getElementById('chImgPrev');if(p)p.style.display='none';}
+
+function openChannelInfo(){
+  const r=getAllRooms().find(x=>x.id===currentRoom);
+  if(!r) return;
+  const postCount=_posts.filter(p=>p.room===currentRoom).length;
+  pushNotif('📢',r.name,`${r.desc||''} · ${postCount} publicações`,true);
+}
+
+function openCreateChannelModal(){
+  document.getElementById('newChName').value='';
+  document.getElementById('newChDesc').value='';
+  document.getElementById('newChIcon').value='';
+  document.getElementById('newChErr').textContent='';
+  openModal('createChannelOv');
+}
+
+async function createChannel(){
+  const name=document.getElementById('newChName').value.trim().toLowerCase().replace(/\s+/g,'-');
+  const desc=document.getElementById('newChDesc').value.trim();
+  const icon=document.getElementById('newChIcon').value.trim()||'📢';
+  const isPublic=document.getElementById('newChPublic').checked;
+  if(!name){document.getElementById('newChErr').textContent='Nome obrigatório.';return;}
+  if(getAllRooms().find(r=>r.id===name||r.name.toLowerCase()===name)){
+    document.getElementById('newChErr').textContent='Canal já existe.';return;
+  }
+  const newRoom={id:name,name:name.charAt(0).toUpperCase()+name.slice(1),icon,desc,isPublic,ownerId:CU.id,ts:Date.now()};
+  // Save to DB
+  const r=await DB.createChannel(newRoom);
+  if(r.error){document.getElementById('newChErr').textContent=r.error;return;}
+  _dynamicRooms.push(newRoom);
+  S.s('fm_dynamic_rooms',_dynamicRooms);
+  closeModal('createChannelOv');
+  renderLS();
+  openChannel(name);
+  pushNotif('📢','Canal criado!',`#${name} está pronto`,true);
+}
+
+// Load dynamic rooms from storage
+function loadDynamicRooms(){
+  _dynamicRooms=S.g('fm_dynamic_rooms')||[];
+}
+
+// Patch switchRoom to use channel view on mobile
+const _origSwitchRoom = typeof switchRoom === 'function' ? switchRoom : null;
+
+
+// ════════════════════════════════════════════════
+// AUTH STEP NAVIGATION
+// ════════════════════════════════════════════════
+function _showAuthStep(stepId) {
+  ['authStep1','authStep2','authStepForgot'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = id === stepId ? 'block' : 'none';
+  });
+}
+function showForgotPassword() { _showAuthStep('authStepForgot'); }
+function backToAuthStep1() { _showAuthStep('authStep1'); clearAuthErr(); }
+ // back-compat alias
+
+// ── toggle password visibility ───────────────────
+function togglePw(inputId, btn) {
+  const inp = document.getElementById(inputId);
+  if (!inp) return;
+  const show = inp.type === 'password';
+  inp.type = show ? 'text' : 'password';
+  btn.style.color = show ? 'var(--acc)' : 'var(--tx3)';
+}
+
+// ── progress bar for OTP ─────────────────────────
+function setOTPProgress(pct) {
+  const bar = document.getElementById('otpProgressBar');
+  if (bar) bar.style.width = pct + '%';
+}
+
+// ── shake OTP inputs on error ────────────────────
+function shakeOTP() {
+  for (let i = 0; i < 6; i++) {
+    const el = document.getElementById('otp' + i);
+    if (el) { el.classList.add('error'); setTimeout(() => el.classList.remove('error'), 700); }
+  }
+  const wrap = document.getElementById('otpInputsWrap');
+  if (wrap) { wrap.style.animation = 'none'; requestAnimationFrame(() => wrap.style.animation = 'pop .35s ease'); }
+}
+
+// ── forgot password ──────────────────────────────
+async function doForgotPassword() {
+  const email = (document.getElementById('fpEmail')?.value || '').trim();
+  if (!email) { showAuthErr('fpErr','Introduz o teu e-mail.'); return; }
+  const btn = document.getElementById('fpBtn');
+  if (btn) { btn.disabled = true; btn.textContent = 'A enviar...'; }
+  if (DB.mode === 'supabase') {
+    const r = await SB._req('POST', '/auth/v1/recover', { email });
+    const errEl = document.getElementById('fpErr');
+    if (!r.error) {
+      if (errEl) { errEl.style.color = 'var(--ok)'; errEl.textContent = '✓ Link enviado! Verifica o teu e-mail.'; }
+    } else {
+      showAuthErr('fpErr', r.error || 'Erro ao enviar. Tenta novamente.');
+    }
+  } else {
+    const errEl = document.getElementById('fpErr');
+    if (errEl) { errEl.style.color = 'var(--ok)'; errEl.textContent = '✓ (modo local) Simulado — sem servidor.'; }
+  }
+  if (btn) { btn.disabled = false; btn.textContent = 'Enviar link de recuperação'; }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
   loadSettings();
+  updateAuthInstallBar();
 
-  // Re-bind modal overlay clicks (needed because HTML parsed before JS)
+  // Init DB then hide splash (Supabase → Firebase → localStorage)
+  DB.init().then(()=>{
+    hideSplash();
+  });
+  setTimeout(hideSplash, 2500); // Fallback: max 2.5s splash
+
+  // Back button — intercept popstate (Android back / browser back)
+  window.addEventListener('popstate', e=>{
+    handleBackBtn();
+    // Always keep a state in the stack so next back is catchable
+    _safePush({fm:1});
+  });
+  // Seed initial history entry
+  _safePush({fm:1});
+
+  // Re-bind modal overlay clicks
   document.querySelectorAll('.modal-ov').forEach(ov => {
     ov.addEventListener('click', e => { if(e.target === ov) ov.classList.remove('open'); });
   });
 
-  // Auto-login
+  // Auto-login — check Supabase session first, then localStorage
   load();
+  const sbSess=SB._loadSession();
+  if(sbSess&&sbSess.access_token){
+    // Refresh Supabase token silently
+    SB.refreshSession().then(sess=>{
+      if(sess){
+        const sid=S.g('fm_sess');
+        if(sid){const u=_users.find(u=>u.id===sid);if(u){CU=u;enterApp();hideSplash();return;}}
+      }
+    }).catch(()=>{});
+  }
   const sid = S.g('fm_sess');
   if(sid) {
     const u = _users.find(u => u.id === sid);
-    if(u) { CU = u; enterApp(); return; }
+    if(u) { CU = u; enterApp(); hideSplash(); return; }
   }
-  // No session → stay on auth screen (already active by default)
-  // Holiday check on auth screen too
+  // No session → stay on auth screen
   checkHoliday();
   // Back button for mobile groups
   document.addEventListener('click',e=>{
