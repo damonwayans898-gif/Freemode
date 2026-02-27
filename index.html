@@ -4555,7 +4555,7 @@ const SB = {
     const r=await SB._req('POST','/auth/v1/token?grant_type=refresh_token',{refresh_token:stored.refresh_token});
     if(r.data?.access_token){
       SB._token=r.data.access_token;SB._refresh=r.data.refresh_token;SB._userId=r.data.user?.id;
-      SS.s('sb_session',{access_token:SB._token,refresh_token:SB._refresh,user_id:SB._userId}));
+      SS.s('sb_session',{access_token:SB._token,refresh_token:SB._refresh,user_id:SB._userId});
       return r.data;
     }
     return null;
@@ -4566,7 +4566,7 @@ const SB = {
   _saveSession(d){
     if(d?.access_token){
       SB._token=d.access_token;SB._refresh=d.refresh_token;SB._userId=d.user?.id||d.user_id;
-      SS.s('sb_session',{access_token:d.access_token,refresh_token:d.refresh_token,user_id:SB._userId}));
+      SS.s('sb_session',{access_token:d.access_token,refresh_token:d.refresh_token,user_id:SB._userId});
     }
   },
   _loadSession(){
@@ -4638,7 +4638,7 @@ const FB = {
       const r=await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInAnonymously?key=${FIREBASE_CONFIG.apiKey}`,
         {method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});
       const d=await r.json();
-      if(d.idToken){// fb token not persisted;return d.idToken;}
+      if(d.idToken){ return d.idToken; }
     }catch(e){}
     return null;
   },
@@ -5291,7 +5291,7 @@ function _showAuthStep(stepId) {
 }
 function showForgotPassword() { _showAuthStep('authStepForgot'); }
 function backToAuthStep1() { _showAuthStep('authStep1'); clearAuthErr(); }
- // back-compat alias
+
 
 // ── toggle password visibility ───────────────────
 function togglePw(inputId, btn) {
@@ -5379,23 +5379,6 @@ document.addEventListener('DOMContentLoaded', function() {
     ov.addEventListener('click', e => { if(e.target === ov) ov.classList.remove('open'); });
   });
 
-  // Auto-login — check Supabase session first, then localStorage
-  load();
-  const sbSess=SB._loadSession();
-  if(sbSess&&sbSess.access_token){
-    // Refresh Supabase token silently
-    SB.refreshSession().then(sess=>{
-      if(sess){
-        const sid=S.g('fm_sess');
-        if(sid){const u=_users.find(u=>u.id===sid);if(u){CU=u;enterApp();hideSplash();return;}}
-      }
-    }).catch(()=>{});
-  }
-  const sid = S.g('fm_sess');
-  if(sid) {
-    const u = _users.find(u => u.id === sid);
-    if(u) { CU = u; enterApp(); hideSplash(); return; }
-  }
   // No session → stay on auth screen
   checkHoliday();
   // Back button for mobile groups
