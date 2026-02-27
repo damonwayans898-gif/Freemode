@@ -1997,24 +1997,13 @@ let lsTab='rooms';
 // ════════════════════════════════════════════════════════════════
 // STORAGE
 // ════════════════════════════════════════════════════════════════
-const S={
-  g:k=>{try{return JSON.parse(localStorage.getItem(k))}catch{return null}},
-  s:(k,v)=>localStorage.setItem(k,JSON.stringify(v))
-};
-function load(){
-  _posts=S.g('fm_posts')||[];
-  _users=S.g('fm_users')||[];
-  _convs=S.g('fm_convs')||{};
-  _groups=S.g('fm_groups')||[];
-  _notifs=S.g('fm_notifs')||[];
-}
-function save(){
-  if(CU){updUser(CU);} // Always persist latest CU data
-  S.s('fm_posts',_posts);S.s('fm_users',_users);
-  S.s('fm_convs',_convs);S.s('fm_groups',_groups);
-  S.s('fm_notifs',_notifs);
-}
-function updUser(u){const i=_users.findIndex(x=>x.id===u.id);if(i>-1)_users[i]=u;else _users.push(u);}
+// S = in-memory cache only (no localStorage)
+const S={_m:{},g:k=>S._m[k]??null,s:(k,v)=>{S._m[k]=v;}};
+// SS = sessionStorage (only for auth tokens — cleared on tab close)
+const SS={g:k=>{try{return JSON.parse(sessionStorage.getItem(k))}catch{return null}},s:(k,v)=>{try{sessionStorage.setItem(k,JSON.stringify(v))}catch{}}};
+function load(){/* data loaded from Supabase on demand */}
+function save(){if(CU){const i=_users.findIndex(x=>x.id===CU.id);if(i>-1)_users[i]=CU;else _users.push(CU);if(DB.mode==='supabase'&&SB._token)DB.saveUser(CU).catch(()=>{});}}
+function updUser(u){const i=_users.findIndex(x=>x.id===u.id);if(i>-1)_users[i]=u;else _users.push(u);if(CU&&u.id===CU.id&&DB.mode==='supabase'&&SB._token)DB.saveUser(u).catch(()=>{});}
 
 // ════════════════════════════════════════════════════════════════
 // HELPERS
@@ -2064,20 +2053,17 @@ function clearAuthErr() {
 }
 
 
-function _handleSBLogin(sbUser, email, pass, sessionData){
-  // Find or create local user linked to Supabase user
-  load();
+function _handleSBLogin(sbUser,email,pass,sessionData){
   let u=_users.find(u=>u.email&&u.email.toLowerCase()===email.toLowerCase());
   if(!u){
     u={id:sbUser.id||uid(),name:sbUser.user_metadata?.display_name||email.split('@')[0],
-      email,pass,isAnon:false,verified:true,
-      avatar:sbUser.user_metadata?.avatar_url||null,
-      bio:'',followers_ids:[],following_ids:[],posts:0,ts:Date.now()};
+       email,pass:'',isAnon:false,verified:true,avatar:sbUser.user_metadata?.avatar_url||null,
+       bio:'',followers_ids:[],following_ids:[],posts:0,ts:Date.now()};
     _users.push(u);
   }
   u.sbId=sbUser.id;u.verified=true;
-  CU=u;updUser(CU);save();
-  S.s('fm_sess',CU.id);
+  CU=u;
+  SS.s('fm_sess',CU.id);
   _registerDevice();
   DB.saveUser(CU).catch(()=>{});
   enterApp();
@@ -2162,23 +2148,21 @@ async function doRegister() {
   }
 }
 function doAnon(){
-  load();
-  const num=String(Math.floor(Math.random()*9999)).padStart(4,'0');
-  const u={id:uid(),name:'Anônimo#'+num,isAnon:true,handle:'@anon'+num,
-    bio:'Usuário anônimo.',avatar:null,email:null,password:null,
-    joined:new Date().toLocaleDateString('pt-BR'),posts:0,followers:0,following:0};
-  _users.push(u);
-  CU=u;
-  save();
-  S.s('fm_sess',u.id);
-  enterApp();
+  clearAuthErr();
+  const u={id:uid(),name:'Anônimo_'+Math.floor(Math.random()*9999),
+    email:null,pass:null,isAnon:true,verified:true,avatar:null,bio:'',
+    followers_ids:[],following_ids:[],posts:0,ts:Date.now()};
+  _users.push(u);CU=u;
+  SS.s('fm_sess',CU.id);
+  _registerDevice();enterApp();
 }
 function doLogout(){
-  if(DB.mode==='supabase') SB.signOut().catch(()=>{});
+  if(DB.mode==='supabase')SB.signOut().catch(()=>{});
+  DB._intervals?.forEach(clearInterval);
   CU=null;currentPeer=null;currentGroup=null;
-  S.s('fm_sess',null);
+  _posts=[];_convs={};_groups=[];_notifs=[];_users=[];
+  SS.s('fm_sess',null);SS.s('sb_session',null);
   showScreen('authScreen');
-  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('on'));
 }
 
 // auto-login runs in DOMContentLoaded below
@@ -2309,14 +2293,13 @@ function rmCompImg(){composeImgData=null;document.getElementById('compPreview').
 function sendPost(){
   const txt=document.getElementById('postTA').value.trim();
   if(!txt&&!composeImgData)return;
-  const p={id:uid(),uid:CU.id,uname:CU.name,uavatar:CU.avatar,
-    txt,img:composeImgData,time:fmtTime(Date.now()),ts:Date.now(),
-    room:currentRoom,likes:[],comments:[]};
-  _posts.unshift(p);
-  CU.posts=(CU.posts||0)+1;updUser(CU);save();
+  const p={id:uid(),uid:CU.id,uname:CU.name,uavatar:CU.avatar,txt,img:composeImgData,time:fmtTime(Date.now()),ts:Date.now(),room:currentRoom,likes:[],comments:[]};
+  _posts.unshift(p);CU.posts=(CU.posts||0)+1;
+  document.getElementById('postTA').value='';
+  document.getElementById('postTA').style.height='auto';
+  rmCompImg();playSendSound();renderPosts();
   DB.savePost(p).catch(()=>{});
-  document.getElementById('postTA').value='';document.getElementById('postTA').style.height='auto';rmCompImg();
-  playSendSound();renderPosts();
+  DB.saveUser(CU).catch(()=>{});
   broadcast({type:'new_post',uid:CU.id,room:currentRoom,preview:txt.substring(0,60)});
 }
 
@@ -2337,8 +2320,9 @@ function toggleLike(pid){
   const p=_posts.find(x=>x.id===pid);if(!p)return;
   const i=p.likes.indexOf(CU.id);
   if(i>-1)p.likes.splice(i,1);
-  else{p.likes.push(CU.id);if(p.uid!==CU.id){addNotif('❤️',CU.name+' adorou sua publicação',p.txt?.substring(0,50)||'','likes');broadcast({type:'like',postOwner:p.uid,uid:CU.id,preview:p.txt?.substring(0,40)||'',postId:p.id});}}
-  save();renderPosts();setTimeout(()=>{const cw=document.getElementById('cw_'+pid);if(cw&&cw.classList.contains('open'))cw.classList.add('open');},10);
+  else{p.likes.push(CU.id);if(p.uid!==CU.id){addNotif('❤️',CU.name+' adorou a tua publicação',p.txt?.substring(0,50)||'','likes');broadcast({type:'like',postOwner:p.uid,uid:CU.id,preview:p.txt?.substring(0,40)||'',postId:p.id});}}
+  renderPosts();
+  DB.updatePostLikes(pid,p.likes).catch(()=>{});
 }
 function toggleComments(pid){
   const cw=document.getElementById('cw_'+pid);
@@ -2347,10 +2331,12 @@ function toggleComments(pid){
 function addComment(pid){
   const el=document.getElementById('ci_'+pid);const txt=el.value.trim();if(!txt)return;
   const p=_posts.find(x=>x.id===pid);if(!p)return;
-  p.comments.push({id:uid(),uid:CU.id,uname:CU.name,uavatar:CU.avatar,txt,ts:Date.now()});
-  if(p.uid!==CU.id){addNotif('💬',CU.name+' comentou',txt.substring(0,60),'likes');broadcast({type:'comment',postOwner:p.uid,uid:CU.id,txt:txt.substring(0,60),postId:pid});}
-  save();playSendSound();el.value='';
-  renderPosts();setTimeout(()=>document.getElementById('cw_'+pid)?.classList.add('open'),50);
+  if(!p.comments)p.comments=[];
+  const c={id:uid(),uid:CU.id,uname:CU.name,uavatar:CU.avatar,txt,ts:Date.now()};
+  p.comments.push(c);
+  if(p.uid!==CU.id){addNotif('💬',CU.name+' comentou',txt.substring(0,60),'likes');broadcast({type:'comment',postOwner:p.uid,uid:CU.id,txt:txt.substring(0,40)});}
+  el.value='';renderPosts();
+  DB.addComment(pid,c).catch(()=>{});
 }
 function showPostMenu(e,pid,mine){
   e.stopPropagation();
@@ -2361,7 +2347,11 @@ function showPostMenu(e,pid,mine){
   `;
   showCtx(e,items);
 }
-function deletePost(pid){_posts=_posts.filter(p=>p.id!==pid);save();renderPosts();}
+function deletePost(pid){
+  _posts=_posts.filter(p=>p.id!==pid);
+  renderPosts();
+  DB.deletePost(pid).catch(()=>{});
+}
 
 // room selector
 function showRoomSelector(){
@@ -2399,36 +2389,22 @@ function renderRightGroups(){
 // ════════════════════════════════════════════════════════════════
 // PRIVATE CHAT
 // ════════════════════════════════════════════════════════════════
-function openPrivate(uid2){
-  load();
-  // Mark messages as read
-  const key2=convKey(CU?.id||'',uid2);
-  if(_convs[key2])_convs[key2].forEach(m=>{if(m.from!==CU?.id)m.read=true;});save();
-  const u=_users.find(x=>x.id===uid2);
-  if(!u){ alert('Usuário não encontrado.'); return; }
+async function openPrivate(uid2){
+  let u=_users.find(x=>x.id===uid2)||await DB.getProfile(uid2);
+  if(!u){alert('Utilizador não encontrado.');return;}
   currentPeer=u;
-  const avEl=document.getElementById('chatPeerAv');
-  renderAv(avEl,u,38,14);
-  avEl.onclick=()=>openProfileFromChat();
+  const avEl=document.getElementById('chatPeerAv');renderAv(avEl,u,38,14);
+  avEl.onclick=()=>openProfileModal(u);
   document.getElementById('chatPeerName').textContent=u.name;
-  document.getElementById('chatPeerStatus').textContent='● Online';
-  renderChatMsgs();
-  // Track if we came from msgs list
-  if(document.getElementById('msgsScreen')?.classList.contains('active'))
-    document.getElementById('privateScreen').setAttribute('data-from','msgs');
-  else
-    document.getElementById('privateScreen').removeAttribute('data-from');
-  showScreen('privateScreen');
-  // Re-bind Enter key every time
-  const ta=document.getElementById('chatTA');
-  ta.value='';
-  ta.style.height='auto';
-  const newTA=ta.cloneNode(true);
-  ta.parentNode.replaceChild(newTA,ta);
-  newTA.addEventListener('keydown',e=>{
-    if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendPrivateMsg();}
-  });
-  setTimeout(()=>newTA.focus(),100);
+  // Load messages
+  const key=convKey(CU.id,uid2);
+  if(!_convs[key]||!_convs[key].length){
+    const r=await SB.select('messages',`or=(and(sender_id.eq.${CU.id},receiver_id.eq.${uid2}),and(sender_id.eq.${uid2},receiver_id.eq.${CU.id}))&order=created_at.asc&limit=100`);
+    if(!r.error&&r.data)_convs[key]=r.data.map(DB._mapMsg);
+  }
+  if(_convs[key])_convs[key].forEach(m=>{if(m.from!==CU.id)m.read=true;});
+  DB.markMsgsRead(uid2).catch(()=>{});
+  renderChat();showScreen('privateScreen');_safePush({screen:'privateScreen'});
 }
 function closePrivate(){
   currentPeer=null;
@@ -2458,28 +2434,16 @@ function previewChatImg(e){
 }
 function removeChatImg(){chatImgData=null;document.getElementById('chatImgPrev').style.display='none';}
 
-function sendPrivateMsg() {
-  const taEl=document.getElementById('chatTA');
-  if(!taEl||!currentPeer)return;
-  const txt=taEl.value.trim();
-  if(!txt&&!chatImgData)return;
+function sendPrivateMsg(){
+  const taEl=document.getElementById('chatTA');if(!taEl||!currentPeer)return;
+  const txt=taEl.value.trim();if(!txt&&!chatImgData)return;
   const key=convKey(CU.id,currentPeer.id);
   if(!_convs[key])_convs[key]=[];
-  const msg={id:uid(),from:CU.id,txt,img:chatImgData,ts:Date.now()};
+  const msg={id:uid(),from:CU.id,to:currentPeer.id,txt,img:chatImgData,ts:Date.now(),read:false};
   _convs[key].push(msg);
-  save();
+  taEl.value='';taEl.style.height='auto';removeChatImg();playSendSound();renderChat();
   DB.saveMessage(msg,CU.id,currentPeer.id).catch(()=>{});
-  taEl.value='';taEl.style.height='auto';removeChatImg();
-  playSendSound();
-  renderChatMsgs();
-  // Broadcast to other instances/tabs in real-time
-  broadcast({
-    type:'new_msg',
-    to:currentPeer.id,
-    from:CU.id,
-    preview:txt.substring(0,60)||(chatImgData?'📷 Foto':''),
-    convKey:key
-  });
+  broadcast({type:'private_msg',to:currentPeer.id,from:CU.id,preview:txt.substring(0,40)});
 }
 
 // chatTA listener registered when private chat is opened - see openPrivate()
@@ -2548,16 +2512,11 @@ function createGroup(){
   const privacy=document.getElementById('grpPrivacy').value;
   const desc=document.getElementById('grpDesc').value.trim();
   const members=[{id:CU.id,role:'admin'},...grpSelUsers.map(id=>({id,role:'member'}))];
-  const g={id:uid(),name,desc,privacy,avatar:grpAvData,icon:'👥',
-    createdBy:CU.id,createdAt:Date.now(),members,messages:[]};
-  _groups.push(g);save();
-  closeModal('createGroupOv');
-  grpSelUsers=[];
-  renderGroupsList();renderRightGroups();
-  switchLSTab('groups',document.getElementById('lsGroupsTab'));
-  openGroupChat(g.id);
-  navTo('groups');
-  pushNotif('🎉','Grupo criado!',name);
+  const g={id:uid(),name,desc,privacy,avatar:grpAvData||null,ownerId:CU.id,isPublic:privacy==='public',members,rooms:JSON.parse(JSON.stringify(DEFAULT_GROUP_ROOMS)),messages:{},ts:Date.now()};
+  _groups.push(g);
+  closeModal('createGroupOv');grpSelUsers=[];grpAvData=null;
+  renderGroupsList();openGroup(g.id);
+  DB.saveGroup(g).then(async()=>{for(const m of g.members)await DB.saveGroupMember(g.id,m.id,m.role);}).catch(()=>{});
 }
 
 function renderGroupsList(){
@@ -2802,18 +2761,12 @@ function handleEpAvImg(e){
 function saveProfile(){
   const nameVal=document.getElementById('epName').value.trim();
   if(!nameVal){alert('Nome não pode ser vazio.');return;}
-  CU.name=nameVal;
-  CU.bio=document.getElementById('epBio').value.trim();
-  if(epAvData) CU.avatar=epAvData;
-  updUser(CU);
-  save();
-  // Update UI everywhere
+  CU.name=nameVal;CU.bio=document.getElementById('epBio').value.trim();
+  if(epAvData)CU.avatar=epAvData;
+  const i=_users.findIndex(x=>x.id===CU.id);if(i>-1)_users[i]=CU;else _users.push(CU);
   renderAv(document.getElementById('compAv'),CU,38,14);
-  closeModal('editProfileOv');
-  renderPosts();
-  renderOnline();
-  renderLS();
-  pushNotif('✅','Perfil atualizado!','Suas alterações foram salvas');
+  closeModal('editProfileOv');renderProfile(CU);renderPosts();
+  DB.saveUser(CU).catch(()=>{});
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -2845,13 +2798,13 @@ function copyShareLink(){
 // ════════════════════════════════════════════════════════════════
 // NOTIFICATIONS
 // ════════════════════════════════════════════════════════════════
-function addNotif(ico, title, body, category) {
-  _notifs.unshift({id:uid(),ico,title,body:body||'',category:category||'system',ts:Date.now(),read:false});
-  if(_notifs.length>100)_notifs=_notifs.slice(0,100);
-  save();updateNotifBadge();
-  if(document.getElementById('notifPanel').classList.contains('open'))renderNotifList();
-  // Fire browser notification if app is in background
-  sendBrowserNotif(title, body||'');
+function addNotif(ico,title,body,category){
+  const n={id:uid(),ico,title,body:body||'',category:category||'system',ts:Date.now(),read:false};
+  _notifs.unshift(n);if(_notifs.length>100)_notifs=_notifs.slice(0,100);
+  updateNotifBadge();
+  if(document.getElementById('notifPanel')?.classList.contains('open'))renderNotifList();
+  sendBrowserNotif(title,body||'');
+  DB.saveNotif(n).catch(()=>{});
 }
 function updateNotifBadge(){
   const unread=_notifs.filter(n=>!n.read).length;
@@ -2900,11 +2853,14 @@ function handleNotifClick(nid) {
   const n=_notifs.find(x=>x.id===nid);
   if(n){n.read=true;save();updateNotifBadge();renderNotifList();}
 }
-function markRead(id){const n=_notifs.find(x=>x.id===id);if(n)n.read=true;save();updateNotifBadge();renderNotifList();}
-function clearNotifs() {
-  if(_npCurrentTab==='all') _notifs=[];
-  else _notifs=_notifs.filter(n=>n.category!==_npCurrentTab&&!(!n.category&&_npCurrentTab==='system'));
-  save();updateNotifBadge();renderNotifList();
+function markRead(id){
+  const n=_notifs.find(x=>x.id===id);if(n)n.read=true;
+  updateNotifBadge();renderNotifList();
+  DB.markNotifRead(id).catch(()=>{});
+}
+function clearNotifs(){
+  _notifs=[];updateNotifBadge();renderNotifList();
+  DB.clearAllNotifs().catch(()=>{});
 }
 function toggleNotifPanel() {
   const p=document.getElementById('notifPanel');
@@ -2923,9 +2879,9 @@ function closeNotifPanel() {
   document.getElementById('notifPanel').classList.remove('open');
   document.getElementById('npOverlay').classList.remove('open');
 }
-function markAllRead() {
-  _notifs.forEach(n=>n.read=true);save();updateNotifBadge();
-  renderNotifList();
+function markAllRead(){
+  _notifs.forEach(n=>n.read=true);updateNotifBadge();renderNotifList();
+  DB.markAllNotifsRead().catch(()=>{});
 }
 let _npCurrentTab='all';
 function switchNpTab(tab,el) {
@@ -3021,7 +2977,7 @@ async function installPWA(){
   await deferredInstall.prompt();deferredInstall=null;
   document.getElementById('pwaBanner').classList.remove('show');
 }
-function dismissPWA(){document.getElementById('pwaBanner').classList.remove('show');localStorage.setItem('pwa_dismissed','1');}
+function dismissPWA(){document.getElementById('pwaBanner').classList.remove('show');SS.s('pwa_dismissed','1');}
 
 // ════════════════════════════════════════════════════════════════
 // SEED DATA
@@ -3069,17 +3025,16 @@ function followUser(uid2){
   if(!target.followers_ids)target.followers_ids=[];
   const idx=CU.following_ids.indexOf(uid2);
   if(idx>-1){
-    CU.following_ids.splice(idx,1);
-    target.followers_ids=target.followers_ids.filter(x=>x!==CU.id);
-    target.followers=Math.max(0,(target.followers||0)-1);
-  } else {
-    CU.following_ids.push(uid2);
-    target.followers_ids.push(CU.id);
-    target.followers=(target.followers||0)+1;
-    addNotif('👥',CU.name+' começou a seguir você','');
+    CU.following_ids.splice(idx,1);target.followers_ids=target.followers_ids.filter(x=>x!==CU.id);
+    target.followers=Math.max((target.followers||1)-1,0);CU.following=Math.max((CU.following||1)-1,0);
+  }else{
+    CU.following_ids.push(uid2);target.followers_ids.push(CU.id);
+    target.followers=(target.followers||0)+1;CU.following=(CU.following||0)+1;
+    addNotif('👤','A seguir '+target.name,'','system');
   }
-  CU.following=(CU.following_ids||[]).length;
-  updUser(target);save();
+  DB.toggleFollow(uid2).catch(()=>{});
+  DB.saveUser(CU).catch(()=>{});
+  renderProfile(CU);
 }
 function isFollowing(uid2){return (CU.following_ids||[]).includes(uid2);}
 
@@ -3310,10 +3265,10 @@ function broadcast(data) {
   // Also write to localStorage for cross-tab polling
   const key = 'fm876_evt_' + data.type + '_' + Date.now();
   try {
-    localStorage.setItem(key, JSON.stringify({...data, _ts: Date.now()}));
+    sessionStorage.setItem(key, JSON.stringify({...data, _ts: Date.now()}));
     // Clean old events (keep last 20)
-    const evtKeys = Object.keys(localStorage).filter(k=>k.startsWith('fm876_evt_')).sort();
-    if(evtKeys.length > 20) evtKeys.slice(0,-20).forEach(k=>localStorage.removeItem(k));
+    const evtKeys = Object.keys(sessionStorage).filter(k=>k.startsWith('fm876_evt_')).sort();
+    if(evtKeys.length > 20) evtKeys.slice(0,-20).forEach(k=>sessionStorage.removeItem(k));
   } catch(e){}
 }
 
@@ -3322,11 +3277,11 @@ function pollRealTime() {
   if(!CU) return;
   const now = Date.now();
   // Check for new events in localStorage
-  const evtKeys = Object.keys(localStorage).filter(k=>k.startsWith('fm876_evt_'));
+  const evtKeys = Object.keys(sessionStorage).filter(k=>k.startsWith('fm876_evt_'));
   let changed = false;
   evtKeys.forEach(k => {
     try {
-      const evt = JSON.parse(localStorage.getItem(k)||'{}');
+      const evt = JSON.parse(sessionStorage.getItem(k)||'{}');
       if(evt._ts > _lastMsgCheck && evt._ts > now - 30000) {
         handleRTMessage(evt);
         changed = true;
@@ -3387,14 +3342,14 @@ function _createPeerConnection(onTrack) {
 // Signaling via localStorage (works same-device + cross-tab)
 function _storeSignal(sigType, data) {
   const key = `fm876_sig_${_activeCallId}_${sigType}`;
-  try { localStorage.setItem(key, JSON.stringify({...data, _ts:Date.now(), from:CU.id})); } catch(e){}
+  try { sessionStorage.setItem(key, JSON.stringify({...data, _ts:Date.now(), from:CU.id})); } catch(e){}
 }
 function _readSignal(sigType) {
   const key = `fm876_sig_${_activeCallId}_${sigType}`;
-  try { const v=localStorage.getItem(key); return v?JSON.parse(v):null; } catch(e){return null;}
+  try { const v=sessionStorage.getItem(key); return v?JSON.parse(v):null; } catch(e){return null;}
 }
 function _clearSignal(sigType) {
-  try { localStorage.removeItem(`fm876_sig_${_activeCallId}_${sigType}`); } catch(e){}
+  try { sessionStorage.removeItem(`fm876_sig_${_activeCallId}_${sigType}`); } catch(e){}
 }
 
 let _sigPollTimer=null;
@@ -3411,7 +3366,7 @@ function _pollWebRTCSignal() {
   // Both: look for ICE candidates from remote
   const iceKey = `fm876_sig_${_activeCallId}_ice_${callPeer?.id}`;
   try {
-    const v = localStorage.getItem(iceKey);
+    const v = sessionStorage.getItem(iceKey);
     if(v) {
       const ice = JSON.parse(v);
       if(ice._ts > (_lastIceTs||0)) {
@@ -3465,7 +3420,7 @@ function _onCallDeclined() {
 function _cleanSignals() {
   if(!_activeCallId) return;
   ['offer','answer','ice','ice_'+callPeer?.id].forEach(t=>{
-    try{localStorage.removeItem(`fm876_sig_${_activeCallId}_${t}`);}catch(e){}
+    try{sessionStorage.removeItem(`fm876_sig_${_activeCallId}_${t}`);}catch(e){}
   });
 }
 
@@ -3841,46 +3796,36 @@ function sendGroupMsg(){
   const rooms=currentGroup.rooms||DEFAULT_GROUP_ROOMS;
   const cr=rooms.find(r=>r.id===currentGroupRoom);
   if(cr?.type==='announce'){const myRole=currentGroup.members.find(m=>m.id===CU.id)?.role;if(myRole!=='admin')return;}
-  if(!currentGroup.messages)currentGroup.messages=[];
-  currentGroup.messages.push({id:uid(),uid:CU.id,txt,img:grpImgData,ts:Date.now(),room:currentGroupRoom});
-  const gi=_groups.findIndex(g=>g.id===currentGroup.id);
-  if(gi>-1)_groups[gi]=currentGroup;
-  save();ta.value='';ta.style.height='auto';removeGrpImg();
-  renderGroupChatPanel();
-  currentGroup.members.filter(m=>m.id!==CU.id).forEach(()=>addNotif('👥',`${CU.name} em #${currentGroupRoom}`,txt.substring(0,40)||(grpImgData?'📷':''),false));
+  if(!currentGroup.messages)currentGroup.messages={};
+  if(!currentGroup.messages[currentGroupRoom])currentGroup.messages[currentGroupRoom]=[];
+  const msg={id:uid(),from:CU.id,uname:CU.name,uavatar:CU.avatar,txt,img:grpImgData,ts:Date.now()};
+  currentGroup.messages[currentGroupRoom].push(msg);
+  ta.value='';ta.style.height='auto';grpImgData=null;
+  const pi=document.getElementById('grpImgPrev');if(pi)pi.style.display='none';
+  playSendSound();renderGroupChat();
+  DB.saveGroupMsg(msg,currentGroup.id,currentGroupRoom).catch(()=>{});
+  broadcast({type:'group_msg',groupId:currentGroup.id,uid:CU.id,preview:txt.substring(0,40)});
 }
 
 // Override enterApp to add new init calls
 const _origEnterApp=enterApp;
 function enterApp(){
-  load();
   showScreen('appScreen');
   currentRoom='geral';currentPeer=null;currentGroup=null;
   renderAv(document.getElementById('compAv'),CU,38,14);
-  loadDynamicRooms();
-  seedData();
-  document.querySelectorAll('.lstab').forEach(t=>t.classList.remove('on'));
-  const firstLsTab=document.getElementById('lsRoomsTab');
-  if(firstLsTab)firstLsTab.classList.add('on');
-  lsTab='rooms';
-  switchLSTab('rooms',null);
   document.getElementById('compRoomLabel').textContent='Geral';
-  renderPosts();renderOnline();renderRightGroups();updateNotifBadge();
-  initPWA();schedulePushes();
-  initRealTime();
-  _registerDevice();
-  hideSplash();
-  // Push main screen to history so back btn works
+  document.querySelectorAll('.lstab').forEach(t=>t.classList.remove('on'));
+  const ft=document.getElementById('lsRoomsTab');if(ft)ft.classList.add('on');
+  lsTab='rooms'; switchLSTab('rooms',null);
+  // Load data from Supabase then render
+  DB.loadAll().then(()=>{
+    loadDynamicRooms();
+    renderPosts();renderOnline();renderRightGroups();updateNotifBadge();
+  });
+  initPWA();schedulePushes();initRealTime();_registerDevice();hideSplash();
   _safePush({screen:'app'});
-  // New features init
-  checkHoliday();
-  checkNewUsers();
-  requestPushPermission();
-  updateInstallFab();
-  // Simulate incoming calls occasionally
-  setTimeout(()=>{
-    if(Math.random()>.6) simulateIncomingCall();
-  },30000+Math.random()*60000);
+  checkHoliday();checkNewUsers();requestPushPermission();updateInstallFab();
+  setTimeout(()=>{if(Math.random()>.6)simulateIncomingCall();},30000+Math.random()*60000);
 }
 
 // ── Mobile: groups panel back button
@@ -3958,7 +3903,7 @@ window.addEventListener('beforeinstallprompt',e=>{
   e.preventDefault();
   deferredInstall=e;
   updateInstallFab();
-  if(!localStorage.getItem('pwa_dismissed'))
+  if(!SS.g('pwa_dismissed'))
     setTimeout(()=>document.getElementById('pwaBanner').classList.add('show'),5000);
 });
 
@@ -4382,7 +4327,7 @@ function updateAuthInstallBar(){
   if(deferredInstall){ bar.classList.add('show'); }
   else {
     // Check if we can show anyway for manual instructions
-    const dismissed = localStorage.getItem('fm_install_dismissed');
+    const dismissed = SS.g('fm_install_dismissed');
     if(!dismissed) bar.classList.add('show');
   }
 }
@@ -4404,7 +4349,7 @@ async function installFromAuth(){
   } else {
     // Fallback — show instructions
     pushNotif('📲','Instalar app','Usa o menu do browser → "Adicionar ao ecrã inicial"',true);
-    localStorage.setItem('fm_install_dismissed','1');
+    SS.s('fm_install_dismissed','1');
     document.getElementById('authInstallBar')?.classList.remove('show');
   }
 }
@@ -4463,85 +4408,59 @@ function _getDeviceInfo(){
 
 function _registerDevice(){
   if(!CU) return;
-  const sessId = localStorage.getItem('fm_sess_id') || ('s_'+Date.now()+'_'+Math.random().toString(36).slice(2));
-  localStorage.setItem('fm_sess_id', sessId);
-  const info = _getDeviceInfo();
-  const devices = JSON.parse(localStorage.getItem('fm_devices_'+CU.id)||'[]');
-  // Update or add this session
-  const existing = devices.findIndex(d=>d.sessId===sessId);
-  const deviceEntry = {
-    sessId, ...info,
-    lastSeen: Date.now(),
-    loginTime: existing>=0 ? devices[existing].loginTime : Date.now()
-  };
-  if(existing>=0) devices[existing]=deviceEntry;
-  else devices.push(deviceEntry);
-  // Keep last 10 devices
-  devices.sort((a,b)=>b.lastSeen-a.lastSeen);
-  if(devices.length>10) devices.splice(10);
-  localStorage.setItem('fm_devices_'+CU.id, JSON.stringify(devices));
+  let sessId=SS.g('fm_device_sid');
+  if(!sessId){sessId=uid();SS.s('fm_device_sid',sessId);}
+  const dev={sessId,label:'Web Browser',browser:navigator.userAgent.substring(0,80),
+    tz:Intl.DateTimeFormat().resolvedOptions().timeZone,lang:navigator.language,
+    loginTime:new Date().toISOString()};
+  DB.saveDevice(dev).catch(()=>{});
 }
 
-function openDeviceManager(){
-  if(!CU) return;
-  _registerDevice();
-  const devices = JSON.parse(localStorage.getItem('fm_devices_'+CU.id)||'[]');
-  const mySessId = localStorage.getItem('fm_sess_id');
-  const list = document.getElementById('deviceList');
-  if(!list) return;
-  if(!devices.length){
-    list.innerHTML='<div style="color:var(--tx2);font-size:13px;text-align:center;padding:20px">Nenhum dispositivo registado</div>';
-  } else {
-    list.innerHTML = devices.map(d=>{
-      const isThis = d.sessId === mySessId;
-      const lastSeen = isThis ? 'Activo agora' : fmtTimeShort(d.lastSeen);
-      return `<div class="device-item">
-        <div class="device-ico">${d.type||'📱'}</div>
-        <div class="device-info">
-          <div class="device-name">${esc(d.label||d.name||'Dispositivo')}</div>
-          <div class="device-sub">${esc(d.sub||'')} · ${lastSeen}</div>
-        </div>
-        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
-          <span class="device-badge ${isThis?'this':'other'}">${isThis?'Este dispositivo':'Outro'}</span>
-          ${!isThis?`<button class="device-revoke" onclick="revokeDevice('${d.sessId}')">Terminar</button>`:''}
-        </div>
-      </div>`;
-    }).join('');
-  }
+async function openDeviceManager(){
+  const list=document.getElementById('deviceList');
+  if(list)list.innerHTML='<div style="text-align:center;padding:20px;color:var(--tx2)">⏳ A carregar...</div>';
   openModal('deviceMgrOv');
+  const devices=await DB.getDevices();
+  const curSid=SS.g('fm_device_sid');
+  if(!list)return;
+  if(!devices.length){list.innerHTML='<div style="padding:20px;color:var(--tx2);text-align:center">Sem dispositivos registados</div>';return;}
+  list.innerHTML=devices.map(d=>`
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--bd)">
+      <div>
+        <div style="font-size:13px;font-weight:600">${d.device_label||'Dispositivo'}${d.session_id===curSid?' <span style="color:var(--acc);font-size:11px">(este)</span>':''}</div>
+        <div style="font-size:11px;color:var(--tx2)">${(d.browser||'').substring(0,50)}</div>
+        <div style="font-size:11px;color:var(--tx3)">Último acesso: ${d.last_seen?new Date(d.last_seen).toLocaleString('pt'):'-'}</div>
+      </div>
+      ${d.session_id!==curSid?`<button onclick="revokeDevice('${d.session_id}')" style="background:var(--err);border:none;border-radius:8px;padding:6px 10px;color:#fff;font-size:12px;cursor:pointer">Revogar</button>`:''}
+    </div>`).join('');
 }
 
-function revokeDevice(sessId){
-  if(!CU) return;
-  const devices = JSON.parse(localStorage.getItem('fm_devices_'+CU.id)||'[]');
-  const updated = devices.filter(d=>d.sessId!==sessId);
-  localStorage.setItem('fm_devices_'+CU.id, JSON.stringify(updated));
-  // Signal revocation via localStorage
-  localStorage.setItem('fm_revoke_'+sessId, Date.now().toString());
-  openDeviceManager(); // refresh
-  pushNotif('🔒','Sessão terminada','Dispositivo removido com sucesso',true);
+async function revokeDevice(sessId){
+  if(!confirm('Revogar este dispositivo?'))return;
+  await DB.revokeDevice(sessId).catch(()=>{});
+  openDeviceManager();
 }
 
 function revokeAllOther(){
   if(!CU) return;
-  const mySessId = localStorage.getItem('fm_sess_id');
-  const devices = JSON.parse(localStorage.getItem('fm_devices_'+CU.id)||'[]');
+  const mySessId = SS.g('fm_device_sid');
+  const devices = JSON.parse(null||'[]');
   devices.forEach(d=>{
-    if(d.sessId!==mySessId) localStorage.setItem('fm_revoke_'+d.sessId, Date.now().toString());
+    if(d.sessId!==mySessId) SS.s('fm_revoke_'+d.sessId, Date.now().toString());
   });
   const mine = devices.filter(d=>d.sessId===mySessId);
-  localStorage.setItem('fm_devices_'+CU.id, JSON.stringify(mine));
+  // devices updated in Supabase;
   closeModal('deviceMgrOv');
   pushNotif('🔒','Todas as sessões terminadas','Apenas este dispositivo activo',true);
 }
 
 function checkRevocation(){
-  const sessId = localStorage.getItem('fm_sess_id');
+  const sessId = SS.g('fm_device_sid');
   if(!sessId) return;
-  const revoked = localStorage.getItem('fm_revoke_'+sessId);
+  const revoked = SS.g('fm_revoke_'+sessId);
   if(revoked && Date.now()-parseInt(revoked) < 30000){
-    localStorage.removeItem('fm_revoke_'+sessId);
-    localStorage.removeItem('fm_sess');
+    SS.s('fm_revoke_'+sessId,null);
+    SS.s('fm_sess',null);
     pushNotif('🔒','Sessão terminada','Este dispositivo foi removido',true);
     setTimeout(()=>doLogout(),1500);
   }
@@ -4570,8 +4489,8 @@ function hideSplash(){
 // 3. Em Authentication → Email Templates → personaliza com o template no email_template.html
 // 4. Em Authentication → Settings → activa "Enable Email OTP" e define OTP expiry 600s
 // ═══════════════════════════════════════════════════════════════════════
-const SUPABASE_URL = '';   'https://shkxaigzhxjltnjdoouv.supabase.co'
-const SUPABASE_ANON_KEY = '';  'sb_publishable_bq6EmcNFD5Ocz9uWtu8ImQ_GtnU6-pX'
+const SUPABASE_URL = '';      // 'https://XXXX.supabase.co'
+const SUPABASE_ANON_KEY = ''; // 'eyJhbGci...'
 
 // Full Supabase REST client
 const SB = {
@@ -4628,15 +4547,15 @@ const SB = {
   async signOut(){
     await SB._req('POST','/auth/v1/logout');
     SB._token=null;SB._refresh=null;SB._userId=null;
-    localStorage.removeItem('sb_session');
+    SS.s('sb_session',null);
   },
   async refreshSession(){
-    const stored=JSON.parse(localStorage.getItem('sb_session')||'null');
+    const stored=SS.g('sb_session');
     if(!stored?.refresh_token) return null;
     const r=await SB._req('POST','/auth/v1/token?grant_type=refresh_token',{refresh_token:stored.refresh_token});
     if(r.data?.access_token){
       SB._token=r.data.access_token;SB._refresh=r.data.refresh_token;SB._userId=r.data.user?.id;
-      localStorage.setItem('sb_session',JSON.stringify({access_token:SB._token,refresh_token:SB._refresh,user_id:SB._userId}));
+      SS.s('sb_session',{access_token:SB._token,refresh_token:SB._refresh,user_id:SB._userId}));
       return r.data;
     }
     return null;
@@ -4647,11 +4566,11 @@ const SB = {
   _saveSession(d){
     if(d?.access_token){
       SB._token=d.access_token;SB._refresh=d.refresh_token;SB._userId=d.user?.id||d.user_id;
-      localStorage.setItem('sb_session',JSON.stringify({access_token:d.access_token,refresh_token:d.refresh_token,user_id:SB._userId}));
+      SS.s('sb_session',{access_token:d.access_token,refresh_token:d.refresh_token,user_id:SB._userId}));
     }
   },
   _loadSession(){
-    const s=JSON.parse(localStorage.getItem('sb_session')||'null');
+    const s=SS.g('sb_session');
     if(s?.access_token){SB._token=s.access_token;SB._refresh=s.refresh_token;SB._userId=s.user_id;}
     return s;
   },
@@ -4713,13 +4632,13 @@ const FB = {
   async _getToken(){
     if(!FIREBASE_CONFIG.apiKey) return null;
     // For client-side, use stored token or anonymous auth
-    const stored = localStorage.getItem('fb_id_token');
+    const stored = null/*fb_id_token*/;
     if(stored){const exp=JSON.parse(atob(stored.split('.')[1]));if(exp.exp>Date.now()/1000+300)return stored;}
     try{
       const r=await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInAnonymously?key=${FIREBASE_CONFIG.apiKey}`,
         {method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});
       const d=await r.json();
-      if(d.idToken){localStorage.setItem('fb_id_token',d.idToken);return d.idToken;}
+      if(d.idToken){// fb token not persisted;return d.idToken;}
     }catch(e){}
     return null;
   },
@@ -4753,196 +4672,224 @@ const FB = {
 // DB LAYER — Supabase first → Firebase → localStorage fallback
 // ═══════════════════════════════════════════════════════════════════════
 const DB = {
-  mode: 'local',
+  mode:'supabase',
 
+  // ── init: restore session, verify token ─────────────────────────
   async init(){
     _setDbStatus('loading','A conectar...');
-    // Try restore Supabase session first
-    if(SUPABASE_URL && SUPABASE_ANON_KEY){
-      SB._loadSession();
-      if(SB._token){
-        const r=await SB.getUser();
-        if(!r.error){
-          DB.mode='supabase';
-          _setDbStatus('ok','Supabase ✓');
-          // Start realtime sync
-          DB._startSync();
-          return 'supabase';
-        }
+    if(!SUPABASE_URL||!SUPABASE_ANON_KEY){
+      DB.mode='local'; _setDbStatus('local','Sem configuração'); return 'local';
+    }
+    // Restore token from sessionStorage
+    const sess=SS.g('sb_session');
+    if(sess?.access_token){SB._token=sess.access_token;SB._refresh=sess.refresh_token;SB._userId=sess.user_id;}
+    if(SB._token){
+      const r=await SB.getUser();
+      if(!r.error){
+        DB.mode='supabase'; _setDbStatus('ok','Supabase ✓');
+        DB._startRealtime(); return 'supabase';
       }
-      // No session — still mark as supabase mode for auth
-      DB.mode='supabase';
-      _setDbStatus('ok','Supabase');
-      return 'supabase';
+      // Try refresh
+      const ref=await SB.refreshSession();
+      if(ref){DB.mode='supabase';_setDbStatus('ok','Supabase ✓');DB._startRealtime();return 'supabase';}
     }
-    if(FIREBASE_CONFIG.projectId && FIREBASE_CONFIG.apiKey){
-      DB.mode='firebase';
-      _setDbStatus('ok','Firebase ✓');
-      return 'firebase';
-    }
-    DB.mode='local';
-    _setDbStatus('local','Local');
-    return 'local';
+    DB.mode='supabase'; _setDbStatus('ok','Supabase'); return 'supabase';
   },
 
-  _startSync(){
-    // Sync posts every 5s from Supabase
-    if(DB.mode!=='supabase') return;
-    setInterval(async()=>{
-      if(!CU||!SUPABASE_URL) return;
-      const r=await SB.select('posts',`room=eq.${currentRoom}&order=created_at.desc&limit=30`);
-      if(!r.error&&Array.isArray(r.data)&&r.data.length){
-        const remotePosts=r.data.map(DB._mapPost);
-        // Merge with local
-        remotePosts.forEach(rp=>{
-          if(!_posts.find(p=>p.id===rp.id)) _posts.unshift(rp);
+  // ── real-time polling ────────────────────────────────────────────
+  _intervals:[],
+  _startRealtime(){
+    DB._intervals.forEach(clearInterval); DB._intervals=[];
+    // Posts: every 5s
+    DB._intervals.push(setInterval(async()=>{
+      if(!CU||!SB._token) return;
+      const r=await SB.select('posts',`room_id=eq.${currentRoom}&is_deleted=eq.false&order=created_at.desc&limit=50`);
+      if(!r.error&&r.data){
+        r.data.map(DB._mapPost).forEach(rp=>{
+          const idx=_posts.findIndex(p=>p.id===rp.id);
+          if(idx<0)_posts.unshift(rp); else _posts[idx]=rp;
         });
+        _posts.sort((a,b)=>b.ts-a.ts);
         renderPosts();
       }
-    },5000);
+    },5000));
+    // Messages: every 4s
+    DB._intervals.push(setInterval(async()=>{
+      if(!CU||!SB._token) return;
+      const before=Object.values(_convs).reduce((s,v)=>s+v.length,0);
+      await DB.fetchConvs();
+      const after=Object.values(_convs).reduce((s,v)=>s+v.length,0);
+      if(after>before){updateNotifBadge();if(currentPeer)renderChat();}
+    },4000));
+    // Notifs: every 10s
+    DB._intervals.push(setInterval(async()=>{
+      if(!CU||!SB._token) return;
+      await DB.fetchNotifs();
+    },10000));
   },
 
-  _mapPost(row){
-    return{id:row.id,uid:row.user_id,uname:row.author_name,uavatar:row.author_avatar,
-      txt:row.content,img:row.image_url,ts:new Date(row.created_at).getTime(),
-      room:row.room_id,likes:row.likes||[],comments:row.comments||[]};
-  },
-  _mapMsg(row){
-    return{id:row.id,from:row.sender_id,txt:row.content,img:row.image_url,
-      ts:new Date(row.created_at).getTime(),read:row.is_read||false};
+  // ── mappers ──────────────────────────────────────────────────────
+  _mapPost(row){return{id:row.id,uid:row.user_id,uname:row.author_name||'?',uavatar:row.author_avatar||null,txt:row.content||'',img:row.image_url||null,ts:new Date(row.created_at).getTime(),time:new Date(row.created_at).toLocaleTimeString('pt',{hour:'2-digit',minute:'2-digit'}),room:row.room_id,likes:row.likes||[],comments:row.comments||[]};},
+  _mapMsg(row){return{id:row.id,from:row.sender_id,to:row.receiver_id,txt:row.content||'',img:row.image_url||null,ts:new Date(row.created_at).getTime(),read:row.is_read||false};},
+  _mapProfile(row){return{id:row.id,name:row.display_name||'?',email:row.email||'',avatar:row.avatar_url||null,bio:row.bio||'',followers:row.followers_count||0,following:row.following_count||0,posts:row.posts_count||0,verified:row.is_verified||false,isAnon:row.is_anonymous||false};},
+  _mapGroup(row){return{id:row.id,name:row.name,icon:row.icon||'👥',avatar:row.avatar_url||null,desc:row.description||'',ownerId:row.owner_id,isPublic:row.is_public||false,members:[],rooms:[],messages:{},ts:new Date(row.created_at).getTime()};},
+
+  // ── loadAll: boot data for current user ─────────────────────────
+  async loadAll(){
+    if(!SB._token||!CU) return;
+    await Promise.all([
+      DB.fetchPosts(currentRoom||'geral'),
+      DB.fetchUsers(),
+      DB.fetchConvs(),
+      DB.fetchGroups(),
+      DB.fetchNotifs()
+    ]).catch(e=>console.warn('[DB.loadAll]',e));
   },
 
-  // ── USER ops ────────────────────────────────────────────────────────
+  async fetchPosts(roomId){
+    if(!SB._token) return;
+    const r=await SB.select('posts',`room_id=eq.${roomId}&is_deleted=eq.false&order=created_at.desc&limit=60`);
+    if(r.error){console.warn('fetchPosts:',r.error);return;}
+    (r.data||[]).map(DB._mapPost).forEach(rp=>{const i=_posts.findIndex(p=>p.id===rp.id);if(i<0)_posts.push(rp);else _posts[i]=rp;});
+    _posts.sort((a,b)=>b.ts-a.ts);
+  },
+
+  async fetchUsers(){
+    if(!SB._token) return;
+    const r=await SB.select('profiles','limit=100&order=created_at.asc');
+    if(!r.error&&r.data) r.data.map(DB._mapProfile).forEach(u=>{const i=_users.findIndex(x=>x.id===u.id);if(i<0)_users.push(u);else _users[i]=u;});
+  },
+
+  async fetchConvs(){
+    if(!SB._token||!CU) return;
+    const r=await SB.select('messages',`or=(sender_id.eq.${CU.id},receiver_id.eq.${CU.id})&order=created_at.asc&limit=300`);
+    if(r.error) return;
+    _convs={};
+    (r.data||[]).forEach(row=>{const msg=DB._mapMsg(row);const key=convKey(row.sender_id,row.receiver_id);if(!_convs[key])_convs[key]=[];if(!_convs[key].find(m=>m.id===msg.id))_convs[key].push(msg);});
+  },
+
+  async fetchGroups(){
+    if(!SB._token||!CU) return;
+    const mem=await SB.select('group_members',`user_id=eq.${CU.id}`);
+    if(mem.error||!mem.data?.length) return;
+    const gids=mem.data.map(m=>m.group_id);
+    const gr=await SB.select('groups',`id=in.(${gids.join(',')})`);
+    if(gr.error) return;
+    _groups=(gr.data||[]).map(DB._mapGroup);
+    for(const g of _groups){
+      const ms=await SB.select('group_members',`group_id=eq.${g.id}`);
+      if(!ms.error) g.members=(ms.data||[]).map(m=>({id:m.user_id,role:m.role}));
+    }
+  },
+
+  async fetchNotifs(){
+    if(!SB._token||!CU) return;
+    const r=await SB.select('notifications',`user_id=eq.${CU.id}&order=created_at.desc&limit=50`);
+    if(r.error) return;
+    _notifs=(r.data||[]).map(n=>({id:n.id,ico:n.icon||'🔔',title:n.title,body:n.body||'',category:n.category||'system',ts:new Date(n.created_at).getTime(),read:n.is_read||false}));
+    updateNotifBadge();
+  },
+
+  // ── USER ─────────────────────────────────────────────────────────
   async saveUser(user){
-    if(DB.mode==='supabase'&&SB._token){
-      await SB.upsert('profiles',{
-        id:user.id, display_name:user.name, email:user.email,
-        avatar_url:user.avatar, bio:user.bio||'',
-        is_anonymous:user.isAnon||false, updated_at:new Date().toISOString()
-      },'id');
-    } else if(DB.mode==='firebase'){
-      await FB.setDoc('users',user.id,user);
-    }
-    S.s('fm_u_'+user.id,user);
+    if(!SB._token) return;
+    return SB.upsert('profiles',{id:user.id,display_name:user.name||'?',email:user.email||null,avatar_url:user.avatar||null,bio:user.bio||'',is_anonymous:user.isAnon||false,updated_at:new Date().toISOString()},'id');
   },
-
   async getProfile(userId){
-    if(DB.mode==='supabase'&&SB._token){
-      const r=await SB.select('profiles',`id=eq.${userId}`,true);
-      if(!r.error&&r.data) return r.data;
-    }
-    return S.g('fm_u_'+userId);
+    if(!SB._token){return _users.find(u=>u.id===userId)||null;}
+    const r=await SB.select('profiles',`id=eq.${userId}`,true);
+    if(!r.error&&r.data){const u=DB._mapProfile(r.data);const i=_users.findIndex(x=>x.id===u.id);if(i>-1)_users[i]=u;else _users.push(u);return u;}
+    return _users.find(u=>u.id===userId)||null;
   },
 
-  // ── POST ops ────────────────────────────────────────────────────────
+  // ── POSTS ────────────────────────────────────────────────────────
   async savePost(post){
-    if(DB.mode==='supabase'&&SB._token){
-      const r=await SB.insert('posts',{
-        id:post.id, user_id:post.uid, author_name:post.uname,
-        author_avatar:post.uavatar||null, content:post.txt||null,
-        image_url:post.img||null, room_id:post.room,
-        likes:post.likes||[], comments:post.comments||[],
-        created_at:new Date(post.ts).toISOString()
-      });
-      if(r.error) console.warn('savePost error:',r.error);
-    }
+    if(!SB._token) return;
+    const r=await SB.insert('posts',{id:post.id,user_id:post.uid,author_name:post.uname,author_avatar:post.uavatar||null,room_id:post.room,content:post.txt||null,image_url:post.img||null,likes:post.likes||[],comments:post.comments||[],created_at:new Date(post.ts).toISOString()});
+    if(r.error)console.warn('[DB.savePost]',r.error);
+    return r;
   },
-  async loadPosts(roomId){
-    if(DB.mode==='supabase'&&SB._token){
-      const r=await SB.select('posts',`room_id=eq.${roomId}&order=created_at.desc&limit=50`);
-      if(!r.error&&Array.isArray(r.data)) return r.data.map(DB._mapPost);
-    }
-    return _posts.filter(p=>p.room===roomId);
-  },
-  async deletePost(postId){
-    if(DB.mode==='supabase'&&SB._token) await SB.delete('posts',{id:postId});
-  },
-  async toggleLikePost(postId, likes){
-    if(DB.mode==='supabase'&&SB._token) await SB.update('posts',{likes},{id:postId});
-  },
-
-  // ── MESSAGE ops ─────────────────────────────────────────────────────
-  async saveMessage(msg, fromId, toId){
-    if(DB.mode==='supabase'&&SB._token){
-      const r=await SB.insert('messages',{
-        id:msg.id, sender_id:fromId, receiver_id:toId,
-        content:msg.txt||null, image_url:msg.img||null,
-        is_read:false, created_at:new Date(msg.ts).toISOString()
-      });
-      if(r.error) console.warn('saveMessage error:',r.error);
-    }
-  },
-  async loadMessages(userId1, userId2){
-    if(DB.mode==='supabase'&&SB._token){
-      const q=`or=(and(sender_id.eq.${userId1},receiver_id.eq.${userId2}),and(sender_id.eq.${userId2},receiver_id.eq.${userId1}))&order=created_at.asc&limit=100`;
-      const r=await SB.select('messages',q);
-      if(!r.error&&Array.isArray(r.data)) return r.data.map(DB._mapMsg);
-    }
-    const key=convKey(userId1,userId2);
-    return _convs[key]||[];
-  },
-  async markRead(msgIds){
-    if(DB.mode==='supabase'&&SB._token&&msgIds.length){
-      await SB._req('PATCH',`/rest/v1/messages?id=in.(${msgIds.join(',')})`,{is_read:true});
+  async deletePost(id){if(!SB._token)return;await SB.update('posts',{is_deleted:true,updated_at:new Date().toISOString()},{id});},
+  async updatePostLikes(postId,likes){if(!SB._token)return;await SB.update('posts',{likes,updated_at:new Date().toISOString()},{id:postId});},
+  async addComment(postId,comment){
+    if(!SB._token) return;
+    // Store comments as JSON array in post row
+    const r=await SB.select('posts',`id=eq.${postId}`,true);
+    if(!r.error&&r.data){
+      const comments=[...(r.data.comments||[]),{id:comment.id,uid:comment.uid,uname:comment.uname,uavatar:comment.uavatar||null,txt:comment.txt,ts:comment.ts}];
+      await SB.update('posts',{comments,updated_at:new Date().toISOString()},{id:postId});
     }
   },
 
-  // ── CHANNEL ops ─────────────────────────────────────────────────────
-  async getChannels(){
-    if(DB.mode==='supabase'&&SB._token){
-      const r=await SB.select('channels','order=created_at.asc');
-      if(!r.error&&Array.isArray(r.data)) return r.data;
-    }
-    return null;
+  // ── MESSAGES ─────────────────────────────────────────────────────
+  async saveMessage(msg,fromId,toId){
+    if(!SB._token) return;
+    const r=await SB.insert('messages',{id:msg.id,sender_id:fromId,receiver_id:toId,content:msg.txt||null,image_url:msg.img||null,is_read:false,created_at:new Date(msg.ts).toISOString()});
+    if(r.error)console.warn('[DB.saveMessage]',r.error);
+    return r;
   },
-  async createChannel(ch){
-    if(DB.mode==='supabase'&&SB._token){
-      return SB.insert('channels',{
-        id:ch.id, name:ch.name, icon:ch.icon||'#',
-        description:ch.desc||'', owner_id:CU.id,
-        is_public:ch.isPublic!==false, created_at:new Date().toISOString()
-      });
-    }
-    return {data:ch,error:null};
+  async markMsgsRead(otherUserId){
+    if(!SB._token||!CU) return;
+    await SB._req('POST','/rest/v1/rpc/mark_conversation_read',{other_user_id:otherUserId});
   },
 
-  // ── GROUP ops ───────────────────────────────────────────────────────
+  // ── GROUPS ───────────────────────────────────────────────────────
   async saveGroup(group){
-    if(DB.mode==='supabase'&&SB._token){
-      await SB.upsert('groups',{
-        id:group.id, name:group.name, icon:group.icon||'👥',
-        avatar_url:group.avatar||null, description:group.desc||'',
-        owner_id:group.ownerId||CU.id, members:JSON.stringify(group.members),
-        created_at:new Date(group.ts||Date.now()).toISOString()
-      },'id');
-    }
+    if(!SB._token) return;
+    return SB.upsert('groups',{id:group.id,name:group.name,icon:group.icon||'👥',avatar_url:group.avatar||null,description:group.desc||'',owner_id:group.ownerId||CU.id,is_public:group.isPublic||false,created_at:new Date(group.ts||Date.now()).toISOString()},'id');
   },
-  async loadGroups(){
-    if(DB.mode==='supabase'&&SB._token){
-      const r=await SB.select('group_members',`user_id=eq.${CU.id}`);
-      if(!r.error&&Array.isArray(r.data)){
-        const gids=r.data.map(m=>m.group_id);
-        if(gids.length){
-          const gr=await SB.select('groups',`id=in.(${gids.join(',')})`);
-          if(!gr.error&&Array.isArray(gr.data)) return gr.data;
-        }
-      }
-    }
-    return null;
+  async saveGroupMember(groupId,userId,role){
+    if(!SB._token) return;
+    return SB.upsert('group_members',{group_id:groupId,user_id:userId,role:role||'member'},'group_id,user_id');
+  },
+  async removeGroupMember(groupId,userId){if(!SB._token)return;await SB.delete('group_members',{group_id:groupId,user_id:userId});},
+  async saveGroupMsg(msg,groupId,roomId){
+    if(!SB._token) return;
+    return SB.insert('group_messages',{id:msg.id,group_id:groupId,sender_id:msg.from||CU.id,sender_name:msg.uname||CU.name,sender_avatar:msg.uavatar||null,room_id:roomId||'geral',content:msg.txt||null,image_url:msg.img||null,created_at:new Date(msg.ts).toISOString()});
   },
 
-  // ── NOTIFICATION ops ────────────────────────────────────────────────
-  async saveNotif(notif){
-    if(DB.mode==='supabase'&&SB._token){
-      SB.insert('notifications',{
-        id:notif.id, user_id:CU.id, icon:notif.ico,
-        title:notif.title, body:notif.body||'',
-        category:notif.category||'system', is_read:notif.read||false,
-        created_at:new Date(notif.ts).toISOString()
-      }).catch(()=>{});
-    }
+  // ── CHANNELS ─────────────────────────────────────────────────────
+  async createChannel(ch){
+    if(!SB._token) return {data:ch,error:null};
+    return SB.insert('channels',{id:ch.id,name:ch.name,icon:ch.icon||'📢',description:ch.desc||'',owner_id:CU.id,is_public:ch.isPublic!==false,created_at:new Date().toISOString()});
+  },
+  async fetchChannels(){
+    if(!SB._token) return null;
+    const r=await SB.select('channels','is_public=eq.true&order=created_at.asc');
+    return r.error?null:r.data;
+  },
+
+  // ── NOTIFICATIONS ────────────────────────────────────────────────
+  async saveNotif(n){
+    if(!SB._token||!CU) return;
+    SB.insert('notifications',{id:n.id,user_id:CU.id,icon:n.ico||'🔔',title:n.title,body:n.body||'',category:n.category||'system',is_read:false,created_at:new Date(n.ts).toISOString()}).catch(()=>{});
+  },
+  async markNotifRead(id){if(!SB._token)return;await SB.update('notifications',{is_read:true},{id});},
+  async markAllNotifsRead(){if(!SB._token||!CU)return;await SB._req('PATCH',`/rest/v1/notifications?user_id=eq.${CU.id}&is_read=eq.false`,{is_read:true});},
+  async clearAllNotifs(){if(!SB._token||!CU)return;await SB.delete('notifications',{user_id:CU.id});},
+
+  // ── FOLLOWERS ────────────────────────────────────────────────────
+  async toggleFollow(targetId){
+    if(!SB._token||!CU) return;
+    const r=await SB._req('POST','/rest/v1/rpc/toggle_follow',{p_target_id:targetId});
+    return r.data;
+  },
+
+  // ── DEVICES ──────────────────────────────────────────────────────
+  async saveDevice(dev){
+    if(!SB._token||!CU) return;
+    await SB.upsert('devices',{user_id:CU.id,session_id:dev.sessId,device_label:dev.label||'Web',browser:dev.browser,timezone:dev.tz,language:dev.lang,last_seen:new Date().toISOString(),login_time:dev.loginTime},'session_id');
+  },
+  async getDevices(){
+    if(!SB._token||!CU) return [];
+    const r=await SB.select('devices',`user_id=eq.${CU.id}&is_revoked=eq.false&order=last_seen.desc`);
+    return r.error?[]:r.data||[];
+  },
+  async revokeDevice(sessId){
+    if(!SB._token) return;
+    await SB.update('devices',{is_revoked:true},{session_id:sessId});
   }
-};
+};;
 
 function _setDbStatus(state, label){
   const dot=document.getElementById('dbDot');
@@ -5257,19 +5204,15 @@ function renderChannelPosts(){
 }
 
 function sendChannelPost(){
-  const ta = document.getElementById('chPostTA');
-  const txt = ta?.value.trim()||'';
-  if(!txt&&!_chImgData) return;
-  const p={id:uid(),uid:CU.id,uname:CU.name,uavatar:CU.avatar,
-    txt,img:_chImgData,time:fmtTime(Date.now()),ts:Date.now(),
-    room:currentRoom,likes:[],comments:[]};
-  _posts.unshift(p);
-  CU.posts=(CU.posts||0)+1;updUser(CU);save();
-  DB.savePost(p).catch(()=>{});
+  const ta=document.getElementById('chPostTA');
+  const txt=ta?.value.trim()||'';
+  if(!txt&&!_chImgData)return;
+  const p={id:uid(),uid:CU.id,uname:CU.name,uavatar:CU.avatar,txt,img:_chImgData,time:fmtTime(Date.now()),ts:Date.now(),room:currentRoom,likes:[],comments:[]};
+  _posts.unshift(p);CU.posts=(CU.posts||0)+1;
   if(ta){ta.value='';ta.style.height='auto';}
-  clearChImg();
-  playSendSound();
-  renderChannelPosts();
+  clearChImg();playSendSound();renderChannelPosts();
+  DB.savePost(p).catch(()=>{});
+  DB.saveUser(CU).catch(()=>{});
   broadcast({type:'new_post',uid:CU.id,room:currentRoom,preview:txt.substring(0,60)});
 }
 
@@ -5323,8 +5266,14 @@ async function createChannel(){
 }
 
 // Load dynamic rooms from storage
-function loadDynamicRooms(){
-  _dynamicRooms=S.g('fm_dynamic_rooms')||[];
+async function loadDynamicRooms(){
+  if(DB.mode==='supabase'&&SB._token){
+    const chs=await DB.fetchChannels();
+    if(chs){
+      const defaults=new Set(['geral','games','musica','tech','memes','esportes','filmes']);
+      _dynamicRooms=chs.filter(c=>!defaults.has(c.id)).map(c=>({id:c.id,name:c.name,icon:c.icon||'📢',desc:c.description||''}));
+    }
+  }
 }
 
 // Patch switchRoom to use channel view on mobile
@@ -5394,11 +5343,27 @@ document.addEventListener('DOMContentLoaded', function() {
   loadSettings();
   updateAuthInstallBar();
 
-  // Init DB then hide splash (Supabase → Firebase → localStorage)
-  DB.init().then(()=>{
+  // Init DB + auto-login from Supabase session
+  DB.init().then(async ()=>{
+    const sess=SS.g('sb_session');
+    if(sess?.access_token){
+      const r=await SB.getUser();
+      if(!r.error&&r.data){
+        const sbUser=r.data;
+        const email=sbUser.email||'';
+        let u=_users.find(u=>u.email&&u.email.toLowerCase()===email.toLowerCase());
+        if(!u){
+          const pr=await DB.getProfile(sbUser.id);
+          u=pr||{id:sbUser.id,name:sbUser.user_metadata?.display_name||email.split('@')[0],email,pass:'',isAnon:false,verified:true,avatar:null,bio:'',followers_ids:[],following_ids:[],posts:0,ts:Date.now()};
+          if(!_users.find(x=>x.id===u.id))_users.push(u);
+        }
+        CU=u;SS.s('fm_sess',CU.id);
+        enterApp();return;
+      }
+    }
     hideSplash();
   });
-  setTimeout(hideSplash, 2500); // Fallback: max 2.5s splash
+  setTimeout(hideSplash, 3000);
 
   // Back button — intercept popstate (Android back / browser back)
   window.addEventListener('popstate', e=>{
